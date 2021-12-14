@@ -1,16 +1,20 @@
 import {
+    Box,
+    Button,
     Container,
     Grid,
+    IconButton,
     List,
     ListItem,
-    ListItemButton,
     ListItemText,
     Paper,
     Typography,
 } from '@mui/material'
 import React from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import { mainRoutes } from '../Router'
+import mop from '../assets/mop.png'
 
 const Layout: React.FC = ({ children }) => {
     const navigate = useNavigate()
@@ -29,31 +33,39 @@ const Layout: React.FC = ({ children }) => {
                         marginBottom: 4,
                     }}
                 >
-                    <Typography variant="h6" noWrap component="div">
-                        Lokalvårdarna
-                    </Typography>
-                    <Typography variant="h6" noWrap component="div">
-                        Lokalvårdarna
-                    </Typography>
+                    <Box display="flex" flexDirection="row" alignItems="center">
+                        <img
+                            src={mop}
+                            alt="logo"
+                            style={{ height: '64px', marginRight: 24 }}
+                        />
+                        <Typography sx={{ fontSize: 32 }}>
+                            Lokalvårdarna
+                        </Typography>
+                    </Box>
+                    <IconButton onClick={() => navigate('account')}>
+                        <AccountCircleIcon style={{ height: 32, width: 32 }} />
+                    </IconButton>
                 </Grid>
                 <Grid item xs>
                     <Paper>
                         <List disablePadding>
-                            {mainRoutes.map((route) => (
-                                <ListItem
-                                    onClick={() => {
-                                        navigate(route.path)
-                                    }}
-                                    button
-                                    key={route.label}
-                                    divider
-                                    selected={
-                                        location.pathname === `/${route.path}`
-                                    }
-                                >
-                                    <ListItemText primary={route.label} />
-                                </ListItem>
-                            ))}
+                            {mainRoutes
+                                .filter((route) => route.inSidebar)
+                                .map((route) => (
+                                    <ListItem
+                                        onClick={() => navigate(route.path)}
+                                        button
+                                        key={route.label}
+                                        divider
+                                        selected={
+                                            location.pathname ===
+                                            `/${route.path}`
+                                        }
+                                    >
+                                        <ListItemText primary={route.label} />
+                                    </ListItem>
+                                ))}
                         </List>
                     </Paper>
                 </Grid>{' '}
