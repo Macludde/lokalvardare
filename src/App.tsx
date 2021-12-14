@@ -1,7 +1,13 @@
 import React from 'react'
+import { ThemeProvider } from 'styled-components'
+import theme from './styles/theme'
 
 const App = () => {
-    return <div>App</div>
+    return (
+        <ThemeProvider theme={theme}>
+            <div>App</div>
+        </ThemeProvider>
+    )
 }
 
 export default App
