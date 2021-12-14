@@ -5,9 +5,9 @@ import theme from './styles/theme'
 
 const App = () => {
     return (
-        <MuiThemeProvider theme={theme}>
+        <MuiThemeProvider theme={theme.mui}>
             <CssBaseline />
-            <StyledThemeProvider theme={theme}>
+            <StyledThemeProvider theme={theme.styled}>
                 <div>App</div>
             </StyledThemeProvider>
         </MuiThemeProvider>
