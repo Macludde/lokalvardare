@@ -1,12 +1,16 @@
+import { CssBaseline, ThemeProvider as MuiThemeProvider } from '@mui/material'
 import React from 'react'
-import { ThemeProvider } from 'styled-components'
+import { ThemeProvider as StyledThemeProvider } from 'styled-components'
 import theme from './styles/theme'
 
 const App = () => {
     return (
-        <ThemeProvider theme={theme}>
-            <div>App</div>
-        </ThemeProvider>
+        <MuiThemeProvider theme={theme}>
+            <CssBaseline />
+            <StyledThemeProvider theme={theme}>
+                <div>App</div>
+            </StyledThemeProvider>
+        </MuiThemeProvider>
     )
 }
 
