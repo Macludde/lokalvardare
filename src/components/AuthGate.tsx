@@ -1,5 +1,6 @@
-import { getAuth, onAuthStateChanged, User } from 'firebase/auth'
-import React, { useEffect } from 'react'
+import { getAuth, User } from 'firebase/auth'
+import React from 'react'
+import { useAuthState } from 'react-firebase-hooks/auth'
 import Login from '../pages/Login'
 
 const auth = getAuth()
@@ -13,18 +14,15 @@ export const AuthContext = React.createContext<AuthContextType>({
 })
 
 const AuthGate: React.FC = ({ children }) => {
-    const [user, setUser] = React.useState<User | null>(null)
-    useEffect(() => {
-        onAuthStateChanged(auth, (updatedUser) => {
-            if (updatedUser) {
-                setUser(updatedUser)
-            } else {
-                setUser(null)
-            }
-        })
-    }, [])
+    const [user, loading, error] = useAuthState(auth)
 
-    const value = React.useMemo(() => ({ user }), [user])
+    const value = React.useMemo(() => ({ user: user ?? null }), [user])
+
+    if (error) {
+        console.error(error)
+    }
+
+    if (loading) return null
 
     if (!user) {
         return <Login />

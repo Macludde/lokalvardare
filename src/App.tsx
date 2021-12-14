@@ -5,22 +5,27 @@ import {
 } from '@mui/material'
 import React from 'react'
 import { ThemeProvider as StyledThemeProvider } from 'styled-components'
+import { BrowserRouter } from 'react-router-dom'
 import { signOut } from './api/firebase/auth'
 import AuthGate from './components/AuthGate'
-import Login from './pages/Login'
+import Layout from './components/Layout'
 import theme from './styles/theme'
+import Router from './Router'
 
 const App = () => {
     return (
-        <MuiThemeProvider theme={theme.mui}>
-            <CssBaseline />
-            <StyledThemeProvider theme={theme.styled}>
-                <AuthGate>
-                    <div>Logged in</div>
-                    <Button onClick={signOut}>Log out</Button>
-                </AuthGate>
-            </StyledThemeProvider>
-        </MuiThemeProvider>
+        <BrowserRouter>
+            <MuiThemeProvider theme={theme.mui}>
+                <CssBaseline />
+                <StyledThemeProvider theme={theme.styled}>
+                    <AuthGate>
+                        <Layout>
+                            <Router />
+                        </Layout>
+                    </AuthGate>
+                </StyledThemeProvider>
+            </MuiThemeProvider>
+        </BrowserRouter>
     )
 }
 

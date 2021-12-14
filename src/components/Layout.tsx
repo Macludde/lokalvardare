@@ -1,27 +1,23 @@
 import {
-    AppBar,
-    Box,
-    Button,
     Container,
-    Divider,
-    Drawer,
     Grid,
     List,
     ListItem,
-    ListItemIcon,
+    ListItemButton,
     ListItemText,
     Paper,
-    Toolbar,
     Typography,
 } from '@mui/material'
 import React from 'react'
-
-const drawerWidth = 240
+import { useNavigate, useLocation } from 'react-router-dom'
+import { mainRoutes } from '../Router'
 
 const Layout: React.FC = ({ children }) => {
+    const navigate = useNavigate()
+    const location = useLocation()
     return (
         <Container>
-            <Grid container>
+            <Grid container columnSpacing={4}>
                 <Grid
                     item
                     xs={12}
@@ -43,16 +39,25 @@ const Layout: React.FC = ({ children }) => {
                 <Grid item xs>
                     <Paper>
                         <List disablePadding>
-                            <ListItem button key="Memes" divider>
-                                <ListItemText primary="Memes" />
-                            </ListItem>
-                            <ListItem button key="Gyckel">
-                                <ListItemText primary="Gyckel" />
-                            </ListItem>
+                            {mainRoutes.map((route) => (
+                                <ListItem
+                                    onClick={() => {
+                                        navigate(route.path)
+                                    }}
+                                    button
+                                    key={route.label}
+                                    divider
+                                    selected={
+                                        location.pathname === `/${route.path}`
+                                    }
+                                >
+                                    <ListItemText primary={route.label} />
+                                </ListItem>
+                            ))}
                         </List>
                     </Paper>
                 </Grid>{' '}
-                <Grid item xs={8} sx={{ textAlign: 'center' }}>
+                <Grid item xs={8}>
                     {children}
                 </Grid>
                 <Grid item xs />
