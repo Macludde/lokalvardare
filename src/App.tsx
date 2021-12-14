@@ -1,6 +1,13 @@
-import { CssBaseline, ThemeProvider as MuiThemeProvider } from '@mui/material'
+import {
+    Button,
+    CssBaseline,
+    ThemeProvider as MuiThemeProvider,
+} from '@mui/material'
 import React from 'react'
 import { ThemeProvider as StyledThemeProvider } from 'styled-components'
+import { signOut } from './api/firebase/auth'
+import AuthGate from './components/AuthGate'
+import Login from './pages/Login'
 import theme from './styles/theme'
 
 const App = () => {
@@ -8,7 +15,10 @@ const App = () => {
         <MuiThemeProvider theme={theme.mui}>
             <CssBaseline />
             <StyledThemeProvider theme={theme.styled}>
-                <div>App</div>
+                <AuthGate>
+                    <div>Logged in</div>
+                    <Button onClick={signOut}>Log out</Button>
+                </AuthGate>
             </StyledThemeProvider>
         </MuiThemeProvider>
     )

@@ -39,7 +39,13 @@
         "react-hooks/exhaustive-deps": "warn",
         "import/prefer-default-export": "off",
         "react/prop-types": "off",
-        "react/function-component-definition": "off"
+        "react/function-component-definition": "off",
+        "prettier/prettier": [
+            "error",
+            {
+                "endOfLine": "auto"
+            }
+        ]
     },
     "settings": {
         "import/resolver": {
