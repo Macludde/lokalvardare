@@ -30,7 +30,11 @@ const Router = () => {
     return (
         <Routes>
             {mainRoutes.map((route) => (
-                <Route path={route.path} element={route.component} />
+                <Route
+                    path={route.path}
+                    element={route.component}
+                    key={route.path}
+                />
             ))}
             <Route path="*" element={<Navigate replace to="/feed" />} />
         </Routes>

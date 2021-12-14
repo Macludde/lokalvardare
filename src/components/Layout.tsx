@@ -28,6 +28,7 @@ const Layout: React.FC = ({ children }) => {
                     sx={{
                         display: 'flex',
                         justifyContent: 'space-between',
+                        alignItems: 'center',
                         paddingY: 2,
                         paddingX: 2,
                         marginBottom: 4,
@@ -44,7 +45,7 @@ const Layout: React.FC = ({ children }) => {
                         </Typography>
                     </Box>
                     <IconButton onClick={() => navigate('account')}>
-                        <AccountCircleIcon style={{ height: 32, width: 32 }} />
+                        <AccountCircleIcon style={{ height: 48, width: 48 }} />
                     </IconButton>
                 </Grid>
                 <Grid item xs>
@@ -69,7 +70,7 @@ const Layout: React.FC = ({ children }) => {
                         </List>
                     </Paper>
                 </Grid>{' '}
-                <Grid item xs={8}>
+                <Grid item xs={6}>
                     {children}
                 </Grid>
                 <Grid item xs />
