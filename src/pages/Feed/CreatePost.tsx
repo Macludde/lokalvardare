@@ -61,7 +61,7 @@ const CreatePost = () => {
                     onChange={(e) => setTitle(e.target.value)}
                     label="Title"
                     type="outlined"
-                    sx={{ marginBottom: 4, width: '100%' }}
+                    style={{ marginBottom: 32, width: '100%' }}
                 />
                 {/* Post content */}
                 <ImageInput
