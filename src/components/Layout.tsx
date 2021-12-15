@@ -90,7 +90,13 @@ const Layout: React.FC = ({ children }) => {
                 </Grid>
                 {/* Sidebar */}
                 <Grid item xs={12} md>
-                    <Paper>
+                    <Paper
+                        style={{
+                            zIndex: 5,
+                            position: 'sticky',
+                            top: 24,
+                        }}
+                    >
                         <List disablePadding>
                             {sidebarRoutes.map((route, index) => (
                                 <ListItem
