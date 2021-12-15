@@ -9,3 +9,8 @@ export const ImagePreview = styled.img`
     max-width: 100%;
     max-height: 400px;
 `
+
+export const PostImage = styled.img`
+    width: 100%;
+    margin-top: 16px;
+`

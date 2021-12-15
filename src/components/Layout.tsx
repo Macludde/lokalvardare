@@ -40,6 +40,7 @@ const Layout: React.FC = ({ children }) => {
                         alignItems: 'center',
                         paddingY: 2,
                         paddingX: 2,
+                        marginTop: 2,
                     }}
                 >
                     {/* Left side */}
@@ -58,6 +59,7 @@ const Layout: React.FC = ({ children }) => {
                         <Tooltip title="Create new post">
                             <IconButton
                                 onClick={() => navigate('/feed/create')}
+                                sx={{ marginX: 1 }}
                             >
                                 <AddCircleIcon
                                     style={{ height: 32, width: 32 }}
@@ -65,14 +67,20 @@ const Layout: React.FC = ({ children }) => {
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="Toggle dark theme">
-                            <IconButton onClick={toggleTheme}>
+                            <IconButton
+                                onClick={toggleTheme}
+                                sx={{ marginX: 1 }}
+                            >
                                 <Brightness4Icon
                                     style={{ height: 32, width: 32 }}
                                 />
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="Account">
-                            <IconButton onClick={() => navigate('account')}>
+                            <IconButton
+                                onClick={() => navigate('account')}
+                                sx={{ marginLeft: 1 }}
+                            >
                                 <AccountCircleIcon
                                     style={{ height: 32, width: 32 }}
                                 />

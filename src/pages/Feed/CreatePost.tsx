@@ -8,7 +8,8 @@ import {
 import { getStorage, ref, uploadBytes } from 'firebase/storage'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import useAuth from '../../../hooks/useAuth'
+import { LoadingButton } from '@mui/lab'
+import useAuth from '../../hooks/useAuth'
 import { ImageInput, ImagePreview } from './styles'
 
 const storage = getStorage()
@@ -20,6 +21,7 @@ const postsCollection = collection(firestore, 'posts')
 const CreatePost = () => {
     const [title, setTitle] = useState('')
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
+    const [uploadLoading, setUploadLoading] = useState(false)
     const { uid } = useAuth()
     const navigate = useNavigate()
 
@@ -33,6 +35,7 @@ const CreatePost = () => {
 
     const upload = async () => {
         if (!selectedFile) return
+        setUploadLoading(true)
         try {
             const newDoc = await addDoc(postsCollection, {
                 title,
@@ -40,9 +43,11 @@ const CreatePost = () => {
                 timestamp: serverTimestamp(),
             })
             await uploadBytes(ref(storage, `posts/${newDoc.id}`), selectedFile)
+            setUploadLoading(false)
             navigate(`/feed/${newDoc.id}`)
         } catch (e: any) {
             console.error(e.code, e.message)
+            setUploadLoading(false)
         }
     }
 
@@ -71,9 +76,13 @@ const CreatePost = () => {
                         alt="uploaded"
                     />
                 )}
-                <Button onClick={upload} variant="contained">
+                <LoadingButton
+                    onClick={upload}
+                    variant="contained"
+                    loading={uploadLoading}
+                >
                     Post
-                </Button>
+                </LoadingButton>
             </Box>
         </Paper>
     )

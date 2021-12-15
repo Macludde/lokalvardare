@@ -1,20 +1,24 @@
-import { Button } from '@mui/material'
+import { Box, Button } from '@mui/material'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import usePosts from '../../hooks/usePosts'
+import Post from './Post'
 
 const Feed = () => {
     const navigate = useNavigate()
+    const [posts, loading, { loadMore, reachedEnd }] = usePosts()
+    console.log(posts)
     return (
-        <div>
-            Feed
-            <Button
-                onClick={() => {
-                    navigate('/feed/create')
-                }}
-            >
-                Create new post
-            </Button>
-        </div>
+        <Box>
+            {posts.map((post) => (
+                <Post post={post} key={post.id} />
+            ))}
+            {!reachedEnd && (
+                <Button onClick={loadMore} disabled={loading}>
+                    Load more
+                </Button>
+            )}
+        </Box>
     )
 }
 

@@ -15,12 +15,15 @@ import { Post } from '../api/firebase/schemes'
 const db = getFirestore()
 const postsCollection = collection(db, 'posts')
 
+export type PostWithID = Post & { id: string }
+
 const usePosts: () => [
-    Post[],
+    PostWithID[],
     boolean,
     {
         error?: FirebaseError
         loadMore: () => void
+        reachedEnd: boolean
     }
 ] = () => {
     const [postDocs, setPostDocs] = useState<
@@ -56,6 +59,7 @@ const usePosts: () => [
         {
             error: undefined,
             loadMore: () => setPostsLimit((curr) => curr + 50),
+            reachedEnd: posts.length < postsLimit,
         },
     ]
 }
