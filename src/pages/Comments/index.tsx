@@ -1,24 +1,28 @@
-import { Box } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import {
     addDoc,
     collection,
     doc,
     getFirestore,
     increment,
+    orderBy,
+    query,
     serverTimestamp,
     updateDoc,
+    where,
 } from 'firebase/firestore'
-import React from 'react'
+import React, { useMemo } from 'react'
 import {
     useCollectionData,
     useDocumentData,
 } from 'react-firebase-hooks/firestore'
-import { useParams } from 'react-router-dom'
-import { Comment } from '../../api/firebase/schemes'
+import { useNavigate, useParams } from 'react-router-dom'
+import { Comment as CommentType } from '../../api/firebase/schemes'
 import useAuth from '../../hooks/useAuth'
 import { PostWithID } from '../../hooks/usePosts'
 import Post from '../Feed/Post'
 import Loading from '../Loading'
+import Comment from './Comment'
 import CommentInput from './CommentInput'
 
 const db = getFirestore()
@@ -26,6 +30,7 @@ const db = getFirestore()
 const Comments = () => {
     const { id } = useParams()
     const { uid } = useAuth()
+    const navigate = useNavigate()
     const [post, postLoading, postError] = useDocumentData(
         doc(db, 'posts', id ?? 'never'),
         {
@@ -36,10 +41,16 @@ const Comments = () => {
     const [comments, loading, error] = useCollectionData(
         collection(db, 'posts', id ?? 'never', 'comments'),
         {
-            transform: (val) => val as Comment & { id: string },
+            transform: (val) => val as CommentType & { id: string },
             idField: 'id',
         }
     )
+
+    const sortedComments = useMemo(() => {
+        return comments
+            ?.filter((comment) => comment.parent === 'root')
+            .sort((a, b) => (b.likes?.length ?? 0) - (a.likes?.length ?? 0))
+    }, [comments])
 
     const postComment = async (text: string, parent: string) => {
         if (!id) return
@@ -55,7 +66,13 @@ const Comments = () => {
         })
     }
 
-    if (postLoading || loading) return <Loading />
+    if (postError) {
+        console.error(postError)
+    }
+
+    if (postLoading || loading || !post) return <Loading />
+
+    const amountOfComments = post?.amountOfComments ?? 0
 
     return (
         <Post post={post as unknown as PostWithID} hideComments>
@@ -66,7 +83,23 @@ const Comments = () => {
                 }}
                 title="Ny kommentar"
             />
-            Comments
+            <Typography sx={{ marginY: 2 }}>
+                {amountOfComments}{' '}
+                {amountOfComments === 1 ? 'kommentar' : 'kommentarer'}
+            </Typography>
+            {sortedComments?.map((comment) => (
+                <Comment
+                    key={comment.id}
+                    comment={comment as unknown as CommentType & { id: string }}
+                    postId={id ?? 'never'}
+                    childComments={
+                        comments?.filter((c) =>
+                            c.parent.startsWith(`root/${comment.id}`)
+                        ) as unknown as (CommentType & { id: string })[]
+                    }
+                    onReply={postComment}
+                />
+            ))}
         </Post>
     )
 }

@@ -1,6 +1,6 @@
 import { Box, TextField } from '@material-ui/core'
 import { LoadingButton } from '@mui/lab'
-import React from 'react'
+import React, { useCallback, useEffect } from 'react'
 
 type CommentInputProps = {
     onSubmit: (text: string) => Promise<void>
@@ -22,6 +22,12 @@ const CommentInput: React.FC<CommentInputProps> = ({ onSubmit, title }) => {
             setIsLoading(false)
         }
     }
+    const handleKeyPress = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            post()
+        }
+    }
+
     return (
         <Box sx={{ display: 'flex' }}>
             <TextField
@@ -31,6 +37,7 @@ const CommentInput: React.FC<CommentInputProps> = ({ onSubmit, title }) => {
                 label={title}
                 variant="outlined"
                 multiline
+                onKeyPress={handleKeyPress}
             />
             <LoadingButton
                 variant="contained"
