@@ -13,8 +13,10 @@ export const ThemeContext = createContext<{
     toggleTheme: () => {},
 })
 
+const defaultThemeType = 'dark'
+
 const App = () => {
-    const [theme, setTheme] = useState<'light' | 'dark'>('light')
+    const [theme, setTheme] = useState<'light' | 'dark'>(defaultThemeType)
 
     const toggleTheme = () => {
         const newTheme = theme === 'light' ? 'dark' : 'light'
