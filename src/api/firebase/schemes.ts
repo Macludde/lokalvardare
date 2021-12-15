@@ -13,8 +13,9 @@ export interface Post {
 }
 
 export interface Comment {
-    authur: string
+    author: string
     content: string
     likes: string[]
     parent: 'root' | string
+    timestamp: Timestamp
 }

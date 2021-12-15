@@ -20,7 +20,7 @@ type PostProps = {
 const db = getFirestore()
 const storage = getStorage()
 
-const Post: React.FC<PostProps> = ({ post, hideComments }) => {
+const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
     const { uid } = useAuth()
     const [author, authorLoading, authorError] = useDocumentDataOnce(
         doc(db, 'users', post.author),
@@ -101,6 +101,7 @@ const Post: React.FC<PostProps> = ({ post, hideComments }) => {
                     </>
                 )}
             </Box>
+            {children}
         </Paper>
     )
 }
