@@ -5,6 +5,7 @@ import Account from './pages/Account'
 import Feed from './pages/Feed'
 import CreatePost from './pages/Feed/CreatePost'
 import Comments from './pages/Comments'
+import Gyckel from './pages/Gyckel'
 
 export const mainRoutes = [
     {
@@ -17,7 +18,7 @@ export const mainRoutes = [
     {
         label: 'Gyckel',
         path: 'gyckel',
-        component: <Account />,
+        component: <Gyckel />,
         inSidebar: true,
         icon: HomeIcon,
     },
