@@ -49,7 +49,7 @@ const usePosts: () => [
     const posts = useMemo(() => {
         return postDocs.map((doc) => {
             const data = doc.data() as Post
-            return { ...data, id: doc.id }
+            return { ...data, id: doc.id } as PostWithID
         })
     }, [postDocs])
 

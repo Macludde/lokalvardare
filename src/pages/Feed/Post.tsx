@@ -14,12 +14,13 @@ import useAuth from '../../hooks/useAuth'
 
 type PostProps = {
     post: PostWithID
+    hideComments?: boolean
 }
 
 const db = getFirestore()
 const storage = getStorage()
 
-const Post: React.FC<PostProps> = ({ post }) => {
+const Post: React.FC<PostProps> = ({ post, hideComments }) => {
     const { uid } = useAuth()
     const [author, authorLoading, authorError] = useDocumentDataOnce(
         doc(db, 'users', post.author),
@@ -65,7 +66,7 @@ const Post: React.FC<PostProps> = ({ post }) => {
     }, [post.likes, uid])
 
     const viewComments = () => {
-        navigate(`/feed/${post.id}/comments`)
+        navigate(`/feed/post/${post.id}`)
     }
 
     /* Instantly updates likes when clicking */
@@ -88,10 +89,17 @@ const Post: React.FC<PostProps> = ({ post }) => {
                     )}
                 </IconButton>
                 {likes}
-                <IconButton sx={{ marginLeft: 2 }} onClick={viewComments}>
-                    <ChatIcon />
-                </IconButton>
-                {post.amountOfComments ?? 0}
+                {!hideComments && (
+                    <>
+                        <IconButton
+                            sx={{ marginLeft: 2 }}
+                            onClick={viewComments}
+                        >
+                            <ChatIcon />
+                        </IconButton>
+                        {post.amountOfComments ?? 0}
+                    </>
+                )}
             </Box>
         </Paper>
     )

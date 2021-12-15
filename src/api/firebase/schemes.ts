@@ -11,3 +11,10 @@ export interface Post {
     amountOfComments: number
     likes: string[]
 }
+
+export interface Comment {
+    authur: string
+    content: string
+    likes: string[]
+    parent: 'root' | string
+}

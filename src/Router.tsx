@@ -4,6 +4,7 @@ import HomeIcon from '@mui/icons-material/Home'
 import Account from './pages/Account'
 import Feed from './pages/Feed'
 import CreatePost from './pages/Feed/CreatePost'
+import Comments from './pages/Comments'
 
 export const mainRoutes = [
     {
@@ -29,6 +30,11 @@ export const mainRoutes = [
         label: 'Skapa inlägg',
         path: 'feed/create',
         component: <CreatePost />,
+    },
+    {
+        label: 'Kommentarer',
+        path: 'feed/post/:id',
+        component: <Comments />,
     },
 ]
 
