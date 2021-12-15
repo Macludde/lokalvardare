@@ -13,12 +13,16 @@ import {
 import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
+import Brightness4Icon from '@mui/icons-material/Brightness4'
 import { mainRoutes } from '../Router'
 import mop from '../assets/mop.png'
+import { ThemeContext } from '../App'
 
 const Layout: React.FC = ({ children }) => {
     const navigate = useNavigate()
     const location = useLocation()
+    const { toggleTheme } = React.useContext(ThemeContext)
+
     return (
         <Container>
             <Grid container columnSpacing={4}>
@@ -44,9 +48,18 @@ const Layout: React.FC = ({ children }) => {
                             Lokalvårdarna
                         </Typography>
                     </Box>
-                    <IconButton onClick={() => navigate('account')}>
-                        <AccountCircleIcon style={{ height: 48, width: 48 }} />
-                    </IconButton>
+                    <Box display="flex" flexDirection="row" alignItems="center">
+                        <IconButton onClick={toggleTheme}>
+                            <Brightness4Icon
+                                style={{ height: 32, width: 32 }}
+                            />
+                        </IconButton>
+                        <IconButton onClick={() => navigate('account')}>
+                            <AccountCircleIcon
+                                style={{ height: 32, width: 32 }}
+                            />
+                        </IconButton>
+                    </Box>
                 </Grid>
                 <Grid item xs>
                     <Paper>

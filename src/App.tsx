@@ -1,28 +1,46 @@
-import {
-    Button,
-    CssBaseline,
-    ThemeProvider as MuiThemeProvider,
-} from '@mui/material'
-import React from 'react'
-import { ThemeProvider as StyledThemeProvider } from 'styled-components'
+import { CssBaseline, ThemeProvider as MuiThemeProvider } from '@mui/material'
+import React, { createContext, useEffect, useState } from 'react'
 import { BrowserRouter } from 'react-router-dom'
-import { signOut } from './api/firebase/auth'
+import { ThemeProvider as StyledThemeProvider } from 'styled-components'
 import AuthGate from './components/AuthGate'
 import Layout from './components/Layout'
-import theme from './styles/theme'
 import Router from './Router'
+import defaultTheme from './styles/theme'
+
+export const ThemeContext = createContext<{
+    toggleTheme: () => void
+}>({
+    toggleTheme: () => {},
+})
 
 const App = () => {
+    const [theme, setTheme] = useState<'light' | 'dark'>('light')
+
+    const toggleTheme = () => {
+        const newTheme = theme === 'light' ? 'dark' : 'light'
+        setTheme(newTheme)
+        localStorage.setItem('theme', newTheme)
+    }
+
+    useEffect(() => {
+        const savedTheme = localStorage.getItem('theme')
+        if (savedTheme) {
+            setTheme(savedTheme as 'light' | 'dark')
+        }
+    }, [])
+
     return (
         <BrowserRouter>
-            <MuiThemeProvider theme={theme.mui}>
+            <MuiThemeProvider theme={defaultTheme.mui[theme]}>
                 <CssBaseline />
-                <StyledThemeProvider theme={theme.styled}>
-                    <AuthGate>
-                        <Layout>
-                            <Router />
-                        </Layout>
-                    </AuthGate>
+                <StyledThemeProvider theme={defaultTheme.styled}>
+                    <ThemeContext.Provider value={{ toggleTheme }}>
+                        <AuthGate>
+                            <Layout>
+                                <Router />
+                            </Layout>
+                        </AuthGate>
+                    </ThemeContext.Provider>
                 </StyledThemeProvider>
             </MuiThemeProvider>
         </BrowserRouter>
