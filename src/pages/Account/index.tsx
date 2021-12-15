@@ -77,7 +77,12 @@ const Account = () => {
                 >
                     <Typography variant="h4">Account</Typography>
                     <Box
-                        sx={{ display: 'flex', alignItems: 'center' }}
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            marginY: 4,
+                            marginRight: 4,
+                        }}
                         ref={loaderContainerRef}
                     >
                         <TextField
@@ -87,7 +92,6 @@ const Account = () => {
                             onChange={(e) => {
                                 setNewName(e.currentTarget.value)
                             }}
-                            sx={{ marginY: 4, marginRight: 4 }}
                         />
                         <Fade in={nameLoading}>
                             <CircularProgress />

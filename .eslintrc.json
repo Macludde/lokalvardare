@@ -39,13 +39,16 @@
         "react-hooks/exhaustive-deps": "warn",
         "import/prefer-default-export": "off",
         "react/prop-types": "off",
+        "react/require-default-props": "off",
         "react/function-component-definition": "off",
         "prettier/prettier": [
             "error",
             {
                 "endOfLine": "auto"
             }
-        ]
+        ],
+        "@typescript-eslint/no-empty-function": "off",
+        "react/jsx-no-constructed-context-values": "off"
     },
     "settings": {
         "import/resolver": {

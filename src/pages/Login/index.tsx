@@ -32,7 +32,7 @@ const Login = () => {
                     Lokalvårdarna
                 </Typography>
                 <Button variant="contained" onClick={signInWithGoogle}>
-                    Sign in with Google
+                    Logga in med Google
                 </Button>
             </Paper>
         </Grid>
