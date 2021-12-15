@@ -1,5 +1,10 @@
 import { Box, Button, Paper, TextField } from '@mui/material'
-import { addDoc, collection, getFirestore } from 'firebase/firestore'
+import {
+    addDoc,
+    collection,
+    getFirestore,
+    serverTimestamp,
+} from 'firebase/firestore'
 import { getStorage, ref, uploadBytes } from 'firebase/storage'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -32,6 +37,7 @@ const CreatePost = () => {
             const newDoc = await addDoc(postsCollection, {
                 title,
                 author: uid,
+                timestamp: serverTimestamp(),
             })
             await uploadBytes(ref(storage, `posts/${newDoc.id}`), selectedFile)
             navigate(`/feed/${newDoc.id}`)
