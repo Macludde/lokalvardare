@@ -56,7 +56,7 @@ const Layout: React.FC = ({ children }) => {
                     </Box>
                     {/* Right side */}
                     <Box display="flex" flexDirection="row" alignItems="center">
-                        <Tooltip title="Create new post">
+                        <Tooltip title="Skapa inlägg">
                             <IconButton
                                 onClick={() => navigate('/feed/create')}
                                 sx={{ marginX: 1 }}
@@ -66,7 +66,7 @@ const Layout: React.FC = ({ children }) => {
                                 />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title="Toggle dark theme">
+                        <Tooltip title="Toggla dark mode">
                             <IconButton
                                 onClick={toggleTheme}
                                 sx={{ marginX: 1 }}
@@ -76,7 +76,7 @@ const Layout: React.FC = ({ children }) => {
                                 />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title="Account">
+                        <Tooltip title="Konto">
                             <IconButton
                                 onClick={() => navigate('account')}
                                 sx={{ marginLeft: 1 }}

@@ -21,12 +21,12 @@ export const mainRoutes = [
         icon: HomeIcon,
     },
     {
-        label: 'Account',
+        label: 'Konto',
         path: 'account',
         component: <Account />,
     },
     {
-        label: 'Create Post',
+        label: 'Skapa inlägg',
         path: 'feed/create',
         component: <CreatePost />,
     },

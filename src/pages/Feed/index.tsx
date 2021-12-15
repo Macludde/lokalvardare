@@ -7,7 +7,7 @@ import Post from './Post'
 const Feed = () => {
     const navigate = useNavigate()
     const [posts, loading, { loadMore, reachedEnd }] = usePosts()
-    console.log(posts)
+
     return (
         <Box>
             {posts.map((post) => (
@@ -15,7 +15,7 @@ const Feed = () => {
             ))}
             {!reachedEnd && (
                 <Button onClick={loadMore} disabled={loading}>
-                    Load more
+                    Ladda fler
                 </Button>
             )}
         </Box>

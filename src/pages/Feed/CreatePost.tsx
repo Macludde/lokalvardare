@@ -53,7 +53,7 @@ const CreatePost = () => {
 
     return (
         <Paper sx={{ padding: 4 }}>
-            <h3>Create new post</h3>
+            <h3>Skapa inlägg</h3>
             <Box display="flex" flexDirection="column" alignItems="flex-start">
                 {/* Post title */}
                 <TextField
@@ -81,7 +81,7 @@ const CreatePost = () => {
                     variant="contained"
                     loading={uploadLoading}
                 >
-                    Post
+                    Lägg upp
                 </LoadingButton>
             </Box>
         </Paper>
