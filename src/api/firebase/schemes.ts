@@ -8,4 +8,6 @@ export interface Post {
     title: string
     author: string
     timestamp: Timestamp
+    amountOfComments: number
+    likes: string[]
 }
