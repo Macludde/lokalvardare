@@ -1,6 +1,8 @@
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'
+import AddCircleIcon from '@mui/icons-material/AddCircle'
+import Brightness4Icon from '@mui/icons-material/Brightness4'
 import {
     Box,
-    Button,
     Container,
     Grid,
     IconButton,
@@ -13,12 +15,9 @@ import {
 } from '@mui/material'
 import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import AddCircleIcon from '@mui/icons-material/AddCircle'
-import AccountCircleIcon from '@mui/icons-material/AccountCircle'
-import Brightness4Icon from '@mui/icons-material/Brightness4'
-import { mainRoutes } from '../Router'
-import mop from '../assets/mop.png'
 import { ThemeContext } from '../App'
+import mop from '../assets/mop.png'
+import { mainRoutes } from '../Router'
 
 const sidebarRoutes = mainRoutes.filter((route) => route.inSidebar)
 

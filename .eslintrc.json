@@ -48,7 +48,9 @@
             }
         ],
         "@typescript-eslint/no-empty-function": "off",
-        "react/jsx-no-constructed-context-values": "off"
+        "react/jsx-no-constructed-context-values": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "no-console": "off"
     },
     "settings": {
         "import/resolver": {

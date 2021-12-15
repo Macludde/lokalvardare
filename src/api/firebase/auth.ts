@@ -1,10 +1,10 @@
 import {
     getAuth,
-    signInWithPopup,
     GoogleAuthProvider,
+    signInWithPopup,
     signOut as fbSignOut,
 } from 'firebase/auth'
-import { doc, setDoc, getDoc } from 'firebase/firestore'
+import { doc, getDoc, setDoc } from 'firebase/firestore'
 import { db } from './config'
 import { User } from './schemes'
 

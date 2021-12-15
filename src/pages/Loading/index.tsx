@@ -14,7 +14,7 @@ const Loading = () => {
             <Fade
                 in
                 style={{
-                    transitionDelay: true ? '800ms' : '0ms',
+                    transitionDelay: '800ms',
                 }}
                 unmountOnExit
             >

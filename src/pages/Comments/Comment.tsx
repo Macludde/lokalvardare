@@ -1,7 +1,7 @@
-import FavoriteIcon from '@mui/icons-material/Favorite'
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import FavoriteIcon from '@mui/icons-material/Favorite'
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import { Box, Button, IconButton, Typography } from '@mui/material'
 import { doc, getFirestore, runTransaction } from 'firebase/firestore'
 import React, { useEffect, useMemo, useState } from 'react'
@@ -25,7 +25,8 @@ const Comment: React.FC<CommentProps> = ({
     onReply,
 }) => {
     const { uid } = useAuth()
-    const [author, authorLoading, authorError] = useDocumentDataOnce(
+    // TODO: Uncomment this and use it
+    const [author, authorLoading /* , authorError */] = useDocumentDataOnce(
         doc(db, 'users', comment.author),
         {
             transform: (val) => val as User,

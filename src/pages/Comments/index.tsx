@@ -5,18 +5,15 @@ import {
     doc,
     getFirestore,
     increment,
-    orderBy,
-    query,
     serverTimestamp,
     updateDoc,
-    where,
 } from 'firebase/firestore'
 import React, { useMemo } from 'react'
 import {
     useCollectionData,
     useDocumentData,
 } from 'react-firebase-hooks/firestore'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { Comment as CommentType } from '../../api/firebase/schemes'
 import useAuth from '../../hooks/useAuth'
 import { PostWithID } from '../../hooks/usePosts'
@@ -30,7 +27,6 @@ const db = getFirestore()
 const Comments = () => {
     const { id } = useParams()
     const { uid } = useAuth()
-    const navigate = useNavigate()
     const [post, postLoading, postError] = useDocumentData(
         doc(db, 'posts', id ?? 'never'),
         {
@@ -38,7 +34,8 @@ const Comments = () => {
             idField: 'id',
         }
     )
-    const [comments, loading, error] = useCollectionData(
+    // TODO: Comment this out and use it
+    const [comments, loading /* , error */] = useCollectionData(
         collection(db, 'posts', id ?? 'never', 'comments'),
         {
             transform: (val) => val as CommentType & { id: string },

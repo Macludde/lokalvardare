@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Fade, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import React from 'react'
 
 const Gyckel = () => {

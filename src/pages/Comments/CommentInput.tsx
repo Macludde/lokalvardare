@@ -1,6 +1,6 @@
 import { Box, TextField } from '@material-ui/core'
 import { LoadingButton } from '@mui/lab'
-import React, { useCallback, useEffect } from 'react'
+import React from 'react'
 
 type CommentInputProps = {
     onSubmit: (text: string) => Promise<void>

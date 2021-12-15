@@ -1,17 +1,7 @@
-import {
-    Box,
-    Button,
-    CircularProgress,
-    Fade,
-    Paper,
-    Slide,
-    TextField,
-    Typography,
-} from '@mui/material'
+import { Box, Button, Fade, Paper, TextField, Typography } from '@mui/material'
 import { doc, updateDoc } from 'firebase/firestore'
 import React, { useEffect, useState } from 'react'
 import { useDocumentData } from 'react-firebase-hooks/firestore'
-import Grow from '@mui/material/Grow'
 import { signOut } from '../../api/firebase/auth'
 import { db } from '../../api/firebase/config'
 import { User } from '../../api/firebase/schemes'
@@ -25,37 +15,27 @@ const Account = () => {
         transform: (data) => data as User,
     })
     const [newName, setNewName] = useState(account?.name ?? '')
-    const [nameLoading, setNameLoading] = useState(false)
     const loaderContainerRef = React.useRef(null)
 
     useEffect(() => {
         setNewName(account?.name ?? '')
-    }, [loading])
+    }, [loading]) // eslint-disable-line
 
+    // Add a loading animation if updating name takes too long
     useEffect(() => {
         if (newName !== account?.name) {
-            const delayLoadingIcon = setTimeout(() => {
-                setNameLoading(true)
-            }, 700)
             const delayNameUpdate = setTimeout(() => {
                 updateDoc(userRef, {
                     name: newName,
-                }).then(() => {
-                    setNameLoading(false)
                 })
-            }, 1500)
+            }, 500)
 
             return () => {
-                clearTimeout(delayLoadingIcon)
                 clearTimeout(delayNameUpdate)
-                setNameLoading(false)
             }
         }
-        setNameLoading(false)
-        return () => {
-            setNameLoading(false)
-        }
-    }, [newName])
+        return () => {}
+    }, [newName]) // eslint-disable-line
 
     if (error) {
         console.error(error)
@@ -93,9 +73,6 @@ const Account = () => {
                                 setNewName(e.currentTarget.value)
                             }}
                         />
-                        <Fade in={nameLoading}>
-                            <CircularProgress />
-                        </Fade>
                     </Box>
 
                     <Button

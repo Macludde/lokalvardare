@@ -1,16 +1,16 @@
+import ChatIcon from '@mui/icons-material/Chat'
+import FavoriteIcon from '@mui/icons-material/Favorite'
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import { Box, IconButton, Paper, Typography } from '@mui/material'
 import { doc, getFirestore, runTransaction } from 'firebase/firestore'
 import { getDownloadURL, getStorage, ref } from 'firebase/storage'
 import React, { useEffect, useState } from 'react'
 import { useDocumentDataOnce } from 'react-firebase-hooks/firestore'
-import ChatIcon from '@mui/icons-material/Chat'
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
-import FavoriteIcon from '@mui/icons-material/Favorite'
 import { useNavigate } from 'react-router-dom'
 import { User } from '../../api/firebase/schemes'
+import useAuth from '../../hooks/useAuth'
 import { PostWithID } from '../../hooks/usePosts'
 import { PostImage } from './styles'
-import useAuth from '../../hooks/useAuth'
 
 type PostProps = {
     post: PostWithID
@@ -22,7 +22,8 @@ const storage = getStorage()
 
 const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
     const { uid } = useAuth()
-    const [author, authorLoading, authorError] = useDocumentDataOnce(
+    // TODO: Comment these out and use them
+    const [author /* , authorLoading, authorError */] = useDocumentDataOnce(
         doc(db, 'users', post.author),
         {
             transform: (val) => val as User,
@@ -36,7 +37,7 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
         getDownloadURL(ref(storage, `posts/${post.id}`)).then((url) =>
             setImageURL(url)
         )
-    }, [])
+    }, [post.id])
 
     const toggleLike = () => {
         if (!uid) return

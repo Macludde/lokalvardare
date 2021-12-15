@@ -1,10 +1,10 @@
-import React from 'react'
-import { Routes, Route, Link, Navigate } from 'react-router-dom'
 import HomeIcon from '@mui/icons-material/Home'
+import React from 'react'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import Account from './pages/Account'
+import Comments from './pages/Comments'
 import Feed from './pages/Feed'
 import CreatePost from './pages/Feed/CreatePost'
-import Comments from './pages/Comments'
 import Gyckel from './pages/Gyckel'
 
 export const mainRoutes = [

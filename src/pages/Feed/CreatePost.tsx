@@ -1,4 +1,5 @@
-import { Box, Button, Paper, TextField } from '@mui/material'
+import { LoadingButton } from '@mui/lab'
+import { Box, Paper, TextField } from '@mui/material'
 import {
     addDoc,
     collection,
@@ -8,14 +9,12 @@ import {
 import { getStorage, ref, uploadBytes } from 'firebase/storage'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { LoadingButton } from '@mui/lab'
 import useAuth from '../../hooks/useAuth'
 import { ImageInput, ImagePreview } from './styles'
 
 const storage = getStorage()
 const firestore = getFirestore()
 
-const postsRef = ref(storage, 'posts')
 const postsCollection = collection(firestore, 'posts')
 
 const CreatePost = () => {
