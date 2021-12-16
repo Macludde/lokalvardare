@@ -10,6 +10,8 @@ export interface Post {
     timestamp: Timestamp
     amountOfComments: number
     likes: string[]
+    type: 'image' | 'file'
+    fileName?: string
 }
 
 export interface Comment {

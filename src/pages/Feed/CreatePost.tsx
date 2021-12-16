@@ -43,10 +43,15 @@ const CreatePost = () => {
         if (!selectedFile) return
         setUploadLoading(true)
         try {
+            const type = selectedFile?.type.startsWith('image/')
+                ? 'image'
+                : 'file'
             const newDoc = await addDoc(postsCollection, {
                 title,
                 author: uid,
                 timestamp: serverTimestamp(),
+                type,
+                fileName: type === 'file' ? selectedFile?.name : undefined,
             })
             await uploadBytes(
                 ref(storage, `posts/${uid}/${newDoc.id}`),
@@ -74,12 +79,12 @@ const CreatePost = () => {
                 />
                 {/* Post content */}
                 <ImageInput
-                    accept="image/*"
+                    // accept="image/*,*/*"
                     id="contained-button-file"
                     type="file"
                     onChange={handleUploadClick}
                 />
-                {selectedFile && (
+                {selectedFile && selectedFile.type.startsWith('image/') && (
                     <ImagePreview
                         src={URL.createObjectURL(selectedFile)}
                         alt="uploaded"

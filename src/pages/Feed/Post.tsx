@@ -44,13 +44,13 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
             transform: (val) => val as User,
         }
     )
-    const [imageURL, setImageURL] = useState<string | null>(null)
+    const [contentUrl, setContentUrl] = useState<string | null>(null)
     const [isLiked, setIsLiked] = useState(post.likes?.includes(uid) ?? false)
     const [likesOpen, setLikesOpen] = useState(false)
 
     useEffect(() => {
         getDownloadURL(ref(storage, `posts/${post.author}/${post.id}`)).then(
-            (url) => setImageURL(url)
+            (url) => setContentUrl(url)
         )
     }, [post.id, post.author])
 
@@ -138,10 +138,30 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
             <Box
                 display="flex"
                 minWidth="100%"
-                minHeight="200px"
+                minHeight={post.type === 'image' ? '200px' : undefined}
                 alignItems="center"
             >
-                {imageURL && <PostImage src={imageURL} alt="post content" />}
+                {contentUrl && (
+                    <>
+                        {post.type === 'image' ||
+                            (post.type === undefined && (
+                                <PostImage
+                                    src={contentUrl}
+                                    alt="post content"
+                                />
+                            ))}
+                        {post.type === 'file' && (
+                            <a
+                                href={contentUrl}
+                                target="_blank"
+                                download
+                                rel="noreferrer"
+                            >
+                                {post.fileName}
+                            </a>
+                        )}
+                    </>
+                )}
             </Box>
             <Box display="flex" alignItems="center">
                 {!isGuest ? (
