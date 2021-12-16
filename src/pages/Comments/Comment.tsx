@@ -3,9 +3,22 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import { Box, Button, IconButton, Typography } from '@mui/material'
-import { doc, getFirestore, runTransaction } from 'firebase/firestore'
+import {
+    collection,
+    deleteDoc,
+    doc,
+    documentId,
+    getDocs,
+    getFirestore,
+    increment,
+    query,
+    runTransaction,
+    updateDoc,
+    where,
+} from 'firebase/firestore'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useDocumentDataOnce } from 'react-firebase-hooks/firestore'
+import DeleteIcon from '@mui/icons-material/Delete'
 import { Comment as CommentType, User } from '../../api/firebase/schemes'
 import useAuth from '../../hooks/useAuth'
 import CommentInput from './CommentInput'
@@ -81,6 +94,44 @@ const Comment: React.FC<CommentProps> = ({
 
     if (authorLoading) return null
 
+    const deleteComment = async () => {
+        if (
+            !window.confirm(
+                'Är du säker du vill ta bort denna mäktiga kommentar?'
+            )
+        )
+            return
+        try {
+            const commentDoc = doc(db, 'posts', postId, 'comments', comment.id)
+            if ((childComments?.length ?? 0) > 0) {
+                const subDocs = await getDocs(
+                    query(
+                        collection(db, 'posts', postId, 'comments'),
+                        where(
+                            documentId(),
+                            'in',
+                            childComments?.map(
+                                (childComment) => childComment.id
+                            )
+                        )
+                    )
+                )
+                deleteDoc(commentDoc)
+                subDocs.docs.forEach((subDoc) => deleteDoc(subDoc.ref))
+                updateDoc(doc(db, 'posts', postId), {
+                    amountOfComments: increment(-(1 + subDocs.docs.length)),
+                })
+            } else {
+                deleteDoc(commentDoc)
+                updateDoc(doc(db, 'posts', postId), {
+                    amountOfComments: increment(-1),
+                })
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     /* Instantly updates likes when clicking */
     const likes =
         (comment.likes?.length ?? 0) +
@@ -145,6 +196,11 @@ const Comment: React.FC<CommentProps> = ({
                 </Box>
                 {!isGuest && (
                     <Box>
+                        {comment.author === uid && (
+                            <IconButton onClick={deleteComment}>
+                                <DeleteIcon color="error" />
+                            </IconButton>
+                        )}
                         <Button onClick={() => setIsReplying((curr) => !curr)}>
                             {isReplying ? 'Avbryt' : 'Svara'}
                         </Button>
@@ -177,7 +233,7 @@ const Comment: React.FC<CommentProps> = ({
                             childComments={
                                 childComments?.filter((c) =>
                                     c.parent.startsWith(
-                                        `${comment.parent}/${comment.id}`
+                                        `${comment.parent}/${comment.id}/${childComment.id}`
                                     )
                                 ) as unknown as (CommentType & { id: string })[]
                             }
