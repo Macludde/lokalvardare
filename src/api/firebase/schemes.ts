@@ -10,9 +10,9 @@ type PostBase = {
     timestamp: Timestamp
     amountOfComments: number
     likes: string[]
-    type: 'image' | 'file'
     fileName?: string
 }
+export type OldPost = PostBase
 
 export type ImagePost = PostBase & {
     type: 'image'

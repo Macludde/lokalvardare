@@ -92,7 +92,7 @@ const CreatePost = () => {
 
             setUploadLoading(false)
             if (newDoc) {
-                navigate(`/feed/${newDoc.id}`)
+                navigate(`/feed/post/${newDoc.id}`)
             }
         } catch (e: any) {
             console.error(e.code, e.message)

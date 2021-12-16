@@ -50,9 +50,9 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
 
     useEffect(() => {
         if (
+            post.type === undefined ||
             post.type === 'image' ||
-            post.type === 'file' ||
-            post.type === undefined
+            post.type === 'file'
         ) {
             const getURL = async (level: number) => {
                 if (level > 5) return
