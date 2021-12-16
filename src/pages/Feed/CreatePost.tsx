@@ -143,7 +143,6 @@ const CreatePost = () => {
                 )}
                 {contentType === 'file' && (
                     <ImageInput
-                        accept="*/*"
                         id="contained-button-file"
                         type="file"
                         onChange={handleUploadClick}
