@@ -58,10 +58,16 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
                 if (level > 5) return
                 try {
                     const url = await getDownloadURL(
-                        ref(storage, `posts/${post.author}/${post.id}`)
+                        ref(
+                            storage,
+                            `posts/${post.author}/${post.id}/${
+                                post.fileName ?? 'unnamedFile'
+                            }`
+                        )
                     )
                     setContentURL(url)
                 } catch (error) {
+                    console.error(error)
                     setContentURL(null)
                     setTimeout(() => {
                         getURL(level + 1)
@@ -121,9 +127,20 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
                         transaction.delete(comment.ref)
                     })
                 })
-                /*  await deleteObject(
-                    ref(storage, `posts/${post.author}/${post.id}`)
-                ) */
+                if (
+                    post.type === 'image' ||
+                    post.type === 'file' ||
+                    post.type === undefined
+                ) {
+                    await deleteObject(
+                        ref(
+                            storage,
+                            `posts/${post.author}/${post.id}/${
+                                post.fileName ?? 'unnamedFile'
+                            }`
+                        )
+                    )
+                }
             } catch (e: any) {
                 console.error(e.code, e.message)
             }
@@ -158,12 +175,7 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
                     alignItems="center"
                     marginY={2}
                 >
-                    <a
-                        href={contentURL ?? ''}
-                        target="_blank"
-                        download
-                        rel="noreferrer"
-                    >
+                    <a href={contentURL ?? ''} target="_blank" rel="noreferrer">
                         {post.fileName}
                     </a>
                 </Box>

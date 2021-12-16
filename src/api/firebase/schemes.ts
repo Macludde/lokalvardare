@@ -14,6 +14,7 @@ type PostBase = {
 
 export type ImagePost = PostBase & {
     type: 'image'
+    fileName: string
 }
 export type FilePost = PostBase & {
     type: 'file'

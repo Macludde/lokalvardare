@@ -57,9 +57,15 @@ const CreatePost = () => {
             switch (contentType) {
                 case 'image':
                     if (!selectedFile) return
+                    data.fileName = selectedFile.name
                     newDoc = await addDoc(postsCollection, data)
                     await uploadBytes(
-                        ref(storage, `posts/${uid}/${newDoc.id}`),
+                        ref(
+                            storage,
+                            `posts/${uid}/${newDoc.id}/${
+                                selectedFile.name ?? 'unnamedFile'
+                            }`
+                        ),
                         selectedFile
                     )
                     break
@@ -68,7 +74,10 @@ const CreatePost = () => {
                     data.fileName = selectedFile.name
                     newDoc = await addDoc(postsCollection, data)
                     await uploadBytes(
-                        ref(storage, `posts/${uid}/${newDoc.id}`),
+                        ref(
+                            storage,
+                            `posts/${uid}/${newDoc.id}/${selectedFile.name}`
+                        ),
                         selectedFile
                     )
                     break
