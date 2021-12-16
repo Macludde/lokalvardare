@@ -76,7 +76,14 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
         <Paper sx={{ padding: 2, marginBottom: 2 }}>
             <Typography variant="h4">{post.title}</Typography>
             <Typography>{author?.name ?? ''}</Typography>
-            {imageURL && <PostImage src={imageURL} alt="post content" />}
+            <Box
+                display="flex"
+                minWidth="100%"
+                minHeight="200px"
+                alignItems="center"
+            >
+                {imageURL && <PostImage src={imageURL} alt="post content" />}
+            </Box>
             <Box display="flex" alignItems="center">
                 <IconButton onClick={toggleLike}>
                     {isLiked ? (
