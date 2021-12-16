@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getFirestore } from 'firebase/firestore'
+import { initializeFirestore } from 'firebase/firestore'
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_apiKey,
@@ -14,4 +14,4 @@ const app = initializeApp(firebaseConfig)
 
 export default app
 
-export const db = getFirestore(app)
+export const db = initializeFirestore(app, { ignoreUndefinedProperties: true })
