@@ -6,7 +6,7 @@ import { doc, getFirestore, runTransaction } from 'firebase/firestore'
 import { getDownloadURL, getStorage, ref } from 'firebase/storage'
 import React, { useEffect, useState } from 'react'
 import { useDocumentDataOnce } from 'react-firebase-hooks/firestore'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { User } from '../../api/firebase/schemes'
 import useAuth from '../../hooks/useAuth'
 import { PostWithID } from '../../hooks/usePosts'
@@ -66,10 +66,6 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
         setIsLiked(post.likes?.includes(uid) ?? false)
     }, [post.likes, uid])
 
-    const viewComments = () => {
-        navigate(`/feed/post/${post.id}`)
-    }
-
     /* Instantly updates likes when clicking */
     const likes =
         (post.likes?.length ?? 0) +
@@ -93,8 +89,9 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
                 {!hideComments && (
                     <>
                         <IconButton
+                            component={Link}
+                            to={`/feed/post/${post.id}`}
                             sx={{ marginLeft: 2 }}
-                            onClick={viewComments}
                         >
                             <ChatIcon />
                         </IconButton>
