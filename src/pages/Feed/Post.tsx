@@ -36,7 +36,7 @@ const db = getFirestore()
 const storage = getStorage()
 
 const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
-    const { uid } = useAuth()
+    const { uid, isAnonymous: isGuest } = useAuth()
     // TODO: Comment these out and use them
     const [author /* , authorLoading, authorError */] = useDocumentDataOnce(
         doc(db, 'users', post.author),
@@ -47,7 +47,6 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
     const [imageURL, setImageURL] = useState<string | null>(null)
     const [isLiked, setIsLiked] = useState(post.likes?.includes(uid) ?? false)
     const [likesOpen, setLikesOpen] = useState(false)
-    const navigate = useNavigate()
 
     useEffect(() => {
         getDownloadURL(ref(storage, `posts/${post.author}/${post.id}`)).then(
@@ -145,13 +144,27 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
                 {imageURL && <PostImage src={imageURL} alt="post content" />}
             </Box>
             <Box display="flex" alignItems="center">
-                <IconButton onClick={toggleLike}>
-                    {isLiked ? (
-                        <FavoriteIcon color="primary" />
-                    ) : (
-                        <FavoriteBorderIcon />
-                    )}
-                </IconButton>
+                {!isGuest ? (
+                    <IconButton onClick={toggleLike}>
+                        {isLiked ? (
+                            <FavoriteIcon color="primary" />
+                        ) : (
+                            <FavoriteBorderIcon />
+                        )}
+                    </IconButton>
+                ) : (
+                    <Tooltip title="Du måste logga in med Google för att gilla">
+                        <Box>
+                            <IconButton onClick={toggleLike} disabled>
+                                {isLiked ? (
+                                    <FavoriteIcon color="primary" />
+                                ) : (
+                                    <FavoriteBorderIcon />
+                                )}
+                            </IconButton>
+                        </Box>
+                    </Tooltip>
+                )}
                 {likes > 0 ? (
                     <Tooltip title="Se vem som gillat">
                         <MUILink

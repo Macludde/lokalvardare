@@ -26,7 +26,7 @@ const db = getFirestore()
 
 const Comments = () => {
     const { id } = useParams()
-    const { uid } = useAuth()
+    const { uid, isAnonymous: isGuest } = useAuth()
     const [post, postLoading, postError] = useDocumentData(
         doc(db, 'posts', id ?? 'never'),
         {
@@ -74,12 +74,18 @@ const Comments = () => {
     return (
         <Post post={post as unknown as PostWithID} hideComments>
             <Box marginTop={2} />
-            <CommentInput
-                onSubmit={async (text) => {
-                    await postComment(text, 'root')
-                }}
-                title="Ny kommentar"
-            />
+            {!isGuest ? (
+                <CommentInput
+                    onSubmit={async (text) => {
+                        await postComment(text, 'root')
+                    }}
+                    title="Ny kommentar"
+                />
+            ) : (
+                <Typography color="text.secondary" fontSize={12}>
+                    Du måste vara inloggad med Google för att kunna kommentera
+                </Typography>
+            )}
             <Typography sx={{ marginY: 2 }}>
                 {amountOfComments}{' '}
                 {amountOfComments === 1 ? 'kommentar' : 'kommentarer'}

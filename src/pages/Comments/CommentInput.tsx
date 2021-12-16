@@ -1,6 +1,7 @@
 import { Box, TextField } from '@material-ui/core'
 import { LoadingButton } from '@mui/lab'
 import React from 'react'
+import useAuth from '../../hooks/useAuth'
 
 type CommentInputProps = {
     onSubmit: (text: string) => Promise<void>

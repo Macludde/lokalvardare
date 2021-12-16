@@ -7,9 +7,10 @@ import {
     serverTimestamp,
 } from 'firebase/firestore'
 import { getStorage, ref, uploadBytes } from 'firebase/storage'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useAuth from '../../hooks/useAuth'
+import { routes } from '../../Router'
 import { ImageInput, ImagePreview } from './styles'
 
 const storage = getStorage()
@@ -21,8 +22,14 @@ const CreatePost = () => {
     const [title, setTitle] = useState('')
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
     const [uploadLoading, setUploadLoading] = useState(false)
-    const { uid } = useAuth()
+    const { uid, isAnonymous: isGuest } = useAuth()
     const navigate = useNavigate()
+
+    useEffect(() => {
+        if (isGuest) {
+            navigate(routes[0].path)
+        }
+    }, [])
 
     const handleUploadClick: React.ChangeEventHandler<HTMLInputElement> = (
         event
