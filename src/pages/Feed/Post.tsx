@@ -9,8 +9,14 @@ import {
     Link as MUILink,
     Tooltip,
 } from '@mui/material'
-import { doc, getFirestore, runTransaction } from 'firebase/firestore'
-import { getDownloadURL, getStorage, ref } from 'firebase/storage'
+import {
+    collection,
+    doc,
+    getDocs,
+    getFirestore,
+    runTransaction,
+} from 'firebase/firestore'
+import { deleteObject, getDownloadURL, getStorage, ref } from 'firebase/storage'
 import React, { useEffect, useState } from 'react'
 import { useDocumentDataOnce } from 'react-firebase-hooks/firestore'
 import { Link, useNavigate } from 'react-router-dom'
@@ -18,6 +24,7 @@ import { User } from '../../api/firebase/schemes'
 import useAuth from '../../hooks/useAuth'
 import { PostWithID } from '../../hooks/usePosts'
 import LikesModal from './LikesModal'
+import PostMenu from './PostMenu'
 import { PostImage } from './styles'
 
 type PostProps = {
@@ -71,6 +78,41 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
         })
     }
 
+    const deletePost = async () => {
+        if (!uid) return
+        if (
+            window.confirm(
+                'Är du säker på att du vill ta bort denna fuktiga meme?'
+            )
+        ) {
+            try {
+                await runTransaction(db, async (transaction) => {
+                    const docRef = doc(db, 'posts', post.id)
+                    const transactionPost = await transaction.get(docRef)
+                    if (!transactionPost.exists) {
+                        throw new Error('Post has been deleted')
+                    }
+                    transaction.delete(docRef)
+                    const commentsRef = collection(
+                        db,
+                        'posts',
+                        post.id,
+                        'comments'
+                    )
+                    const comments = await getDocs(commentsRef)
+                    comments.forEach((comment) => {
+                        transaction.delete(comment.ref)
+                    })
+                })
+                await deleteObject(
+                    ref(storage, `posts/${post.author}/${post.id}`)
+                )
+            } catch (e: any) {
+                console.error(e.code, e.message)
+            }
+        }
+    }
+
     useEffect(() => {
         setIsLiked(post.likes?.includes(uid) ?? false)
     }, [post.likes, uid])
@@ -89,7 +131,10 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
                     likeUIDs={post.likes ?? []}
                 />
             )}
-            <Typography variant="h4">{post.title}</Typography>
+            <Box display="flex" justifyContent="space-between">
+                <Typography variant="h4">{post.title}</Typography>
+                {uid === post.author && <PostMenu onDeletePost={deletePost} />}
+            </Box>
             <Typography>{author?.name ?? ''}</Typography>
             <Box
                 display="flex"
