@@ -50,7 +50,8 @@
         "@typescript-eslint/no-empty-function": "off",
         "react/jsx-no-constructed-context-values": "off",
         "@typescript-eslint/no-explicit-any": "off",
-        "no-console": "off"
+        "no-console": "off",
+        "no-alert": "off"
     },
     "settings": {
         "import/resolver": {

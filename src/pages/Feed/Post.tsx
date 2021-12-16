@@ -4,10 +4,10 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import {
     Box,
     IconButton,
-    Paper,
-    Typography,
     Link as MUILink,
+    Paper,
     Tooltip,
+    Typography,
 } from '@mui/material'
 import {
     collection,
@@ -19,7 +19,7 @@ import {
 import { deleteObject, getDownloadURL, getStorage, ref } from 'firebase/storage'
 import React, { useEffect, useState } from 'react'
 import { useDocumentDataOnce } from 'react-firebase-hooks/firestore'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { User } from '../../api/firebase/schemes'
 import useAuth from '../../hooks/useAuth'
 import { PostWithID } from '../../hooks/usePosts'
@@ -52,7 +52,7 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
         getDownloadURL(ref(storage, `posts/${post.author}/${post.id}`)).then(
             (url) => setImageURL(url)
         )
-    }, [post.id])
+    }, [post.id, post.author])
 
     const toggleLike = () => {
         if (!uid) return

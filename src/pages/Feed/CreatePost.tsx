@@ -29,7 +29,7 @@ const CreatePost = () => {
         if (isGuest) {
             navigate(routes[0].path)
         }
-    }, [])
+    }, [isGuest, navigate])
 
     const handleUploadClick: React.ChangeEventHandler<HTMLInputElement> = (
         event
