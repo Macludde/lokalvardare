@@ -24,7 +24,7 @@ const Comment: React.FC<CommentProps> = ({
     childComments,
     onReply,
 }) => {
-    const { uid } = useAuth()
+    const { uid, isAnonymous: isGuest } = useAuth()
     // TODO: Uncomment this and use it
     const [author, authorLoading /* , authorError */] = useDocumentDataOnce(
         doc(db, 'users', comment.author),
@@ -143,11 +143,13 @@ const Comment: React.FC<CommentProps> = ({
                         </Box>
                     </Box>
                 </Box>
-                <Box>
-                    <Button onClick={() => setIsReplying((curr) => !curr)}>
-                        {isReplying ? 'Avbryt' : 'Svara'}
-                    </Button>
-                </Box>
+                {!isGuest && (
+                    <Box>
+                        <Button onClick={() => setIsReplying((curr) => !curr)}>
+                            {isReplying ? 'Avbryt' : 'Svara'}
+                        </Button>
+                    </Box>
+                )}
             </Box>
             {isReplying && (
                 <CommentInput

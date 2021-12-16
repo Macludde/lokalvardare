@@ -1,4 +1,4 @@
-import { Box, Modal, Paper, Typography } from '@mui/material'
+import { Box, Modal, Typography } from '@mui/material'
 import { User } from 'firebase/auth'
 import {
     collection,
@@ -9,7 +9,6 @@ import {
 } from 'firebase/firestore'
 import React from 'react'
 import { useCollectionDataOnce } from 'react-firebase-hooks/firestore'
-import { PostWithID } from '../../hooks/usePosts'
 import Loading from '../Loading'
 
 type LikesModalProps = {
@@ -20,7 +19,7 @@ type LikesModalProps = {
 const db = getFirestore()
 
 const LikesModal: React.FC<LikesModalProps> = ({ likeUIDs, onClose }) => {
-    const [users, loading, error] = useCollectionDataOnce(
+    const [users, loading] = useCollectionDataOnce(
         query(
             collection(db, 'users'),
             where(

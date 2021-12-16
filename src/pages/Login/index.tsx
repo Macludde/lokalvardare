@@ -1,6 +1,6 @@
 import { Button, Grid, Paper, Typography } from '@mui/material'
 import React from 'react'
-import { signInWithGoogle } from '../../api/firebase/auth'
+import { signInWithGoogle, signInAnonymously } from '../../api/firebase/auth'
 
 const Login = () => {
     return (
@@ -24,15 +24,22 @@ const Login = () => {
                 <Typography
                     sx={{
                         textAlign: 'center',
-                        marginBottom: 4,
+                        marginBottom: 2,
                         fontSize: 32,
                         fontWeight: 'bold',
                     }}
                 >
                     Lokalvårdarna
                 </Typography>
-                <Button variant="contained" onClick={signInWithGoogle}>
+                <Button
+                    variant="contained"
+                    onClick={signInWithGoogle}
+                    sx={{ marginY: 2 }}
+                >
                     Logga in med Google
+                </Button>
+                <Button variant="contained" onClick={signInAnonymously}>
+                    Logga in som Gäst
                 </Button>
             </Paper>
         </Grid>

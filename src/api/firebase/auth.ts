@@ -1,6 +1,7 @@
 import {
     getAuth,
     GoogleAuthProvider,
+    signInAnonymously as firebaseSignInAnonymously,
     signInWithPopup,
     signOut as fbSignOut,
 } from 'firebase/auth'
@@ -30,6 +31,17 @@ export const signInWithGoogle = async () => {
         await setDoc(userRef, {
             name: user.displayName ?? user.email,
         } as User)
+    } catch (error: any) {
+        // Handle Errors here.
+        const errorCode = error.code
+        const errorMessage = error.message
+        console.error(errorCode, errorMessage)
+    }
+}
+
+export const signInAnonymously = async () => {
+    try {
+        await firebaseSignInAnonymously(auth)
     } catch (error: any) {
         // Handle Errors here.
         const errorCode = error.code

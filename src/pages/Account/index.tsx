@@ -55,30 +55,37 @@ const Account = () => {
                         alignItems: 'flex-start',
                     }}
                 >
-                    <Typography variant="h4">Account</Typography>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            marginY: 4,
-                            marginRight: 4,
-                        }}
-                        ref={loaderContainerRef}
-                    >
-                        <TextField
-                            label="Name"
-                            value={newName}
-                            variant="outlined"
-                            onChange={(e) => {
-                                setNewName(e.currentTarget.value)
+                    <Typography variant="h4">
+                        {user.isAnonymous ? 'Gästkonto' : 'Konto'}
+                    </Typography>
+                    {!user.isAnonymous && (
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                marginTop: 4,
+                                marginRight: 4,
                             }}
-                        />
-                    </Box>
+                            ref={loaderContainerRef}
+                        >
+                            <TextField
+                                label="Name"
+                                value={newName}
+                                variant="outlined"
+                                onChange={(e) => {
+                                    setNewName(e.currentTarget.value)
+                                }}
+                            />
+                        </Box>
+                    )}
 
                     <Button
                         variant="contained"
                         color="secondary"
                         onClick={signOut}
+                        sx={{
+                            marginTop: 4,
+                        }}
                     >
                         Sign out
                     </Button>
