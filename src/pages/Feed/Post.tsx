@@ -54,9 +54,21 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
             post.type === 'file' ||
             post.type === undefined
         ) {
-            getDownloadURL(
-                ref(storage, `posts/${post.author}/${post.id}`)
-            ).then((url) => setContentURL(url))
+            const getURL = async (level: number) => {
+                if (level > 5) return
+                try {
+                    const url = await getDownloadURL(
+                        ref(storage, `posts/${post.author}/${post.id}`)
+                    )
+                    setContentURL(url)
+                } catch (error) {
+                    setContentURL(null)
+                    setTimeout(() => {
+                        getURL(level + 1)
+                    }, 200)
+                }
+            }
+            getURL(0)
         }
     }, [post.id, post.author, post.type])
 
