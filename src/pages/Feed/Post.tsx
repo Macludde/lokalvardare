@@ -44,15 +44,21 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
             transform: (val) => val as User,
         }
     )
-    const [imageURL, setImageURL] = useState<string | null>(null)
+    const [contentURL, setContentURL] = useState<string | null>(null)
     const [isLiked, setIsLiked] = useState(post.likes?.includes(uid) ?? false)
     const [likesOpen, setLikesOpen] = useState(false)
 
     useEffect(() => {
-        getDownloadURL(ref(storage, `posts/${post.author}/${post.id}`)).then(
-            (url) => setImageURL(url)
-        )
-    }, [post.id, post.author])
+        if (
+            post.type === 'image' ||
+            post.type === 'file' ||
+            post.type === undefined
+        ) {
+            getDownloadURL(
+                ref(storage, `posts/${post.author}/${post.id}`)
+            ).then((url) => setContentURL(url))
+        }
+    }, [post.id, post.author, post.type])
 
     const toggleLike = () => {
         if (!uid) return
@@ -103,9 +109,9 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
                         transaction.delete(comment.ref)
                     })
                 })
-                await deleteObject(
+                /*  await deleteObject(
                     ref(storage, `posts/${post.author}/${post.id}`)
-                )
+                ) */
             } catch (e: any) {
                 console.error(e.code, e.message)
             }
@@ -115,6 +121,56 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
     useEffect(() => {
         setIsLiked(post.likes?.includes(uid) ?? false)
     }, [post.likes, uid])
+
+    const renderContent = () => {
+        if (post.type === 'image' || post.type === undefined) {
+            return (
+                <Box
+                    display="flex"
+                    minWidth="100%"
+                    minHeight="200px"
+                    alignItems="center"
+                    marginY={2}
+                >
+                    {contentURL && (
+                        <PostImage src={contentURL} alt="post content" />
+                    )}
+                </Box>
+            )
+        }
+        if (post.type === 'file') {
+            return (
+                <Box
+                    display="flex"
+                    minWidth="100%"
+                    alignItems="center"
+                    marginY={2}
+                >
+                    <a
+                        href={contentURL ?? ''}
+                        target="_blank"
+                        download
+                        rel="noreferrer"
+                    >
+                        {post.fileName}
+                    </a>
+                </Box>
+            )
+        }
+        if (post.type === 'text') {
+            return (
+                <Box
+                    display="flex"
+                    minWidth="100%"
+                    alignItems="center"
+                    marginY={2}
+                >
+                    {post.content}
+                </Box>
+            )
+        }
+        return <Typography>Innehållstypen stödjs inte</Typography>
+    }
 
     /* Instantly updates likes when clicking */
     const likes =
@@ -134,15 +190,8 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
                 <Typography variant="h4">{post.title}</Typography>
                 {uid === post.author && <PostMenu onDeletePost={deletePost} />}
             </Box>
-            <Typography>{author?.name ?? ''}</Typography>
-            <Box
-                display="flex"
-                minWidth="100%"
-                minHeight="200px"
-                alignItems="center"
-            >
-                {imageURL && <PostImage src={imageURL} alt="post content" />}
-            </Box>
+            <Typography fontSize={12}>{author?.name ?? ''}</Typography>
+            {renderContent()}
             <Box display="flex" alignItems="center">
                 {!isGuest ? (
                     <IconButton onClick={toggleLike}>
