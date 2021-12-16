@@ -76,7 +76,7 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
             }
             getURL(0)
         }
-    }, [post.id, post.author, post.type])
+    }, [post.id, post.author, post.type, post.fileName])
 
     const toggleLike = () => {
         if (!uid) return

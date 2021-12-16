@@ -138,6 +138,13 @@ const Comment: React.FC<CommentProps> = ({
         (comment.likes?.includes(uid) ? -1 : 0) +
         (isLiked ? 1 : 0)
 
+    const subChildComponents = (childComment: CommentType & { id: string }) =>
+        childComments?.filter((c) =>
+            c.parent.startsWith(
+                `${comment.parent}/${comment.id}/${childComment.id}`
+            )
+        ) as unknown as (CommentType & { id: string })[]
+
     return (
         <Box sx={{ padding: 1, paddingLeft: 2, paddingRight: 0 }}>
             <Box
@@ -230,13 +237,7 @@ const Comment: React.FC<CommentProps> = ({
                             key={childComment.id}
                             comment={childComment}
                             postId={postId}
-                            childComments={
-                                childComments?.filter((c) =>
-                                    c.parent.startsWith(
-                                        `${comment.parent}/${comment.id}/${childComment.id}`
-                                    )
-                                ) as unknown as (CommentType & { id: string })[]
-                            }
+                            childComments={subChildComponents(childComment)}
                             onReply={onReply}
                         />
                     ))}
