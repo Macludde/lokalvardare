@@ -44,15 +44,39 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
             transform: (val) => val as User,
         }
     )
-    const [contentUrl, setContentUrl] = useState<string | null>(null)
+    const [contentURL, setContentURL] = useState<string | null>(null)
     const [isLiked, setIsLiked] = useState(post.likes?.includes(uid) ?? false)
     const [likesOpen, setLikesOpen] = useState(false)
 
     useEffect(() => {
-        getDownloadURL(ref(storage, `posts/${post.author}/${post.id}`)).then(
-            (url) => setContentUrl(url)
-        )
-    }, [post.id, post.author])
+        if (
+            post.type === 'image' ||
+            post.type === 'file' ||
+            post.type === undefined
+        ) {
+            const getURL = async (level: number) => {
+                if (level > 5) return
+                try {
+                    const url = await getDownloadURL(
+                        ref(
+                            storage,
+                            `posts/${post.author}/${post.id}/${
+                                post.fileName ?? 'unnamedFile'
+                            }`
+                        )
+                    )
+                    setContentURL(url)
+                } catch (error) {
+                    console.error(error)
+                    setContentURL(null)
+                    setTimeout(() => {
+                        getURL(level + 1)
+                    }, 200)
+                }
+            }
+            getURL(0)
+        }
+    }, [post.id, post.author, post.type])
 
     const toggleLike = () => {
         if (!uid) return
@@ -103,9 +127,20 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
                         transaction.delete(comment.ref)
                     })
                 })
-                await deleteObject(
-                    ref(storage, `posts/${post.author}/${post.id}`)
-                )
+                if (
+                    post.type === 'image' ||
+                    post.type === 'file' ||
+                    post.type === undefined
+                ) {
+                    await deleteObject(
+                        ref(
+                            storage,
+                            `posts/${post.author}/${post.id}/${
+                                post.fileName ?? 'unnamedFile'
+                            }`
+                        )
+                    )
+                }
             } catch (e: any) {
                 console.error(e.code, e.message)
             }
@@ -115,6 +150,51 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
     useEffect(() => {
         setIsLiked(post.likes?.includes(uid) ?? false)
     }, [post.likes, uid])
+
+    const renderContent = () => {
+        if (post.type === 'image' || post.type === undefined) {
+            return (
+                <Box
+                    display="flex"
+                    minWidth="100%"
+                    minHeight="200px"
+                    alignItems="center"
+                    marginY={2}
+                >
+                    {contentURL && (
+                        <PostImage src={contentURL} alt="post content" />
+                    )}
+                </Box>
+            )
+        }
+        if (post.type === 'file') {
+            return (
+                <Box
+                    display="flex"
+                    minWidth="100%"
+                    alignItems="center"
+                    marginY={2}
+                >
+                    <a href={contentURL ?? ''} target="_blank" rel="noreferrer">
+                        {post.fileName}
+                    </a>
+                </Box>
+            )
+        }
+        if (post.type === 'text') {
+            return (
+                <Box
+                    display="flex"
+                    minWidth="100%"
+                    alignItems="center"
+                    marginY={2}
+                >
+                    {post.content}
+                </Box>
+            )
+        }
+        return <Typography>Innehållstypen stödjs inte</Typography>
+    }
 
     /* Instantly updates likes when clicking */
     const likes =
@@ -134,35 +214,8 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
                 <Typography variant="h4">{post.title}</Typography>
                 {uid === post.author && <PostMenu onDeletePost={deletePost} />}
             </Box>
-            <Typography>{author?.name ?? ''}</Typography>
-            <Box
-                display="flex"
-                minWidth="100%"
-                minHeight={post.type === 'image' ? '200px' : undefined}
-                alignItems="center"
-            >
-                {contentUrl && (
-                    <>
-                        {post.type === 'image' ||
-                            (post.type === undefined && (
-                                <PostImage
-                                    src={contentUrl}
-                                    alt="post content"
-                                />
-                            ))}
-                        {post.type === 'file' && (
-                            <a
-                                href={contentUrl}
-                                target="_blank"
-                                download
-                                rel="noreferrer"
-                            >
-                                {post.fileName}
-                            </a>
-                        )}
-                    </>
-                )}
-            </Box>
+            <Typography fontSize={12}>{author?.name ?? ''}</Typography>
+            {renderContent()}
             <Box display="flex" alignItems="center">
                 {!isGuest ? (
                     <IconButton onClick={toggleLike}>

@@ -9,6 +9,7 @@
 
 #firebase
 /.firebase
+/scripts/serviceAccount.json
 
 # misc
 .DS_Store
