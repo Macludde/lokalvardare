@@ -16,7 +16,7 @@ import {
 import React from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { ThemeContext } from '../App'
-import mop from '../assets/mop.png'
+import logo from '../assets/logo-circle.png'
 import { routes } from '../Router'
 
 const sidebarRoutes = routes.filter((route) => route.inSidebar)
@@ -45,13 +45,10 @@ const Layout: React.FC = ({ children }) => {
                     {/* Left side */}
                     <Box display="flex" flexDirection="row" alignItems="center">
                         <img
-                            src={mop}
+                            src={logo}
                             alt="logo"
-                            style={{ height: '64px', marginRight: 24 }}
+                            style={{ height: '128px', marginRight: 24 }}
                         />
-                        <Typography sx={{ fontSize: 32 }}>
-                            Lokalvårdarna
-                        </Typography>
                     </Box>
                     {/* Right side */}
                     <Box display="flex" flexDirection="row" alignItems="center">
