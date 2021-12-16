@@ -1,13 +1,13 @@
 import HomeIcon from '@mui/icons-material/Home'
 import React from 'react'
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import Account from './pages/Account'
 import Comments from './pages/Comments'
 import Feed from './pages/Feed'
 import CreatePost from './pages/Feed/CreatePost'
 import Gyckel from './pages/Gyckel'
 
-export const mainRoutes = [
+export const routes = [
     {
         label: 'Memes',
         path: 'feed',
@@ -40,9 +40,16 @@ export const mainRoutes = [
 ]
 
 const Router = () => {
+    const location = useLocation()
+    const currentLabel = routes.find(
+        (route) => route.path === location.pathname.substring(1)
+    )?.label
+    document.title = currentLabel
+        ? `${currentLabel} | Lokalvårdarna`
+        : 'Lokalvårdarna'
     return (
         <Routes>
-            {mainRoutes.map((route) => (
+            {routes.map((route) => (
                 <Route
                     path={route.path}
                     element={route.component}
