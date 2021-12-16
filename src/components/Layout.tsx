@@ -14,12 +14,12 @@ import {
     Typography,
 } from '@mui/material'
 import React from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { ThemeContext } from '../App'
-import mop from '../assets/mop.png'
-import { mainRoutes } from '../Router'
+import logo from '../assets/logo-circle.png'
+import { routes } from '../Router'
 
-const sidebarRoutes = mainRoutes.filter((route) => route.inSidebar)
+const sidebarRoutes = routes.filter((route) => route.inSidebar)
 
 const Layout: React.FC = ({ children }) => {
     const navigate = useNavigate()
@@ -45,19 +45,17 @@ const Layout: React.FC = ({ children }) => {
                     {/* Left side */}
                     <Box display="flex" flexDirection="row" alignItems="center">
                         <img
-                            src={mop}
+                            src={logo}
                             alt="logo"
-                            style={{ height: '64px', marginRight: 24 }}
+                            style={{ height: '128px', marginRight: 24 }}
                         />
-                        <Typography sx={{ fontSize: 32 }}>
-                            Lokalvårdarna
-                        </Typography>
                     </Box>
                     {/* Right side */}
                     <Box display="flex" flexDirection="row" alignItems="center">
                         <Tooltip title="Skapa inlägg">
                             <IconButton
-                                onClick={() => navigate('/feed/create')}
+                                component={Link}
+                                to="/feed/create"
                                 sx={{ marginX: 1 }}
                             >
                                 <AddCircleIcon
@@ -78,6 +76,8 @@ const Layout: React.FC = ({ children }) => {
                         <Tooltip title="Konto">
                             <IconButton
                                 onClick={() => navigate('account')}
+                                component={Link}
+                                to="account"
                                 sx={{ marginLeft: 1 }}
                             >
                                 <AccountCircleIcon

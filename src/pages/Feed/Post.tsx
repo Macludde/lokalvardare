@@ -1,15 +1,23 @@
 import ChatIcon from '@mui/icons-material/Chat'
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
-import { Box, IconButton, Paper, Typography } from '@mui/material'
+import {
+    Box,
+    IconButton,
+    Paper,
+    Typography,
+    Link as MUILink,
+    Tooltip,
+} from '@mui/material'
 import { doc, getFirestore, runTransaction } from 'firebase/firestore'
 import { getDownloadURL, getStorage, ref } from 'firebase/storage'
 import React, { useEffect, useState } from 'react'
 import { useDocumentDataOnce } from 'react-firebase-hooks/firestore'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { User } from '../../api/firebase/schemes'
 import useAuth from '../../hooks/useAuth'
 import { PostWithID } from '../../hooks/usePosts'
+import LikesModal from './LikesModal'
 import { PostImage } from './styles'
 
 type PostProps = {
@@ -31,11 +39,12 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
     )
     const [imageURL, setImageURL] = useState<string | null>(null)
     const [isLiked, setIsLiked] = useState(post.likes?.includes(uid) ?? false)
+    const [likesOpen, setLikesOpen] = useState(false)
     const navigate = useNavigate()
 
     useEffect(() => {
-        getDownloadURL(ref(storage, `posts/${post.id}`)).then((url) =>
-            setImageURL(url)
+        getDownloadURL(ref(storage, `posts/${post.author}/${post.id}`)).then(
+            (url) => setImageURL(url)
         )
     }, [post.id])
 
@@ -66,10 +75,6 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
         setIsLiked(post.likes?.includes(uid) ?? false)
     }, [post.likes, uid])
 
-    const viewComments = () => {
-        navigate(`/feed/post/${post.id}`)
-    }
-
     /* Instantly updates likes when clicking */
     const likes =
         (post.likes?.length ?? 0) +
@@ -78,9 +83,22 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
 
     return (
         <Paper sx={{ padding: 2, marginBottom: 2 }}>
+            {likesOpen && (
+                <LikesModal
+                    onClose={() => setLikesOpen(false)}
+                    likeUIDs={post.likes ?? []}
+                />
+            )}
             <Typography variant="h4">{post.title}</Typography>
             <Typography>{author?.name ?? ''}</Typography>
-            {imageURL && <PostImage src={imageURL} alt="post content" />}
+            <Box
+                display="flex"
+                minWidth="100%"
+                minHeight="200px"
+                alignItems="center"
+            >
+                {imageURL && <PostImage src={imageURL} alt="post content" />}
+            </Box>
             <Box display="flex" alignItems="center">
                 <IconButton onClick={toggleLike}>
                     {isLiked ? (
@@ -89,12 +107,29 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
                         <FavoriteBorderIcon />
                     )}
                 </IconButton>
-                {likes}
+                {likes > 0 ? (
+                    <Tooltip title="Se vem som gillat">
+                        <MUILink
+                            href="#"
+                            onClick={(e) => {
+                                e.preventDefault()
+                                setLikesOpen(true)
+                            }}
+                            underline="hover"
+                            color="inherit"
+                        >
+                            {likes}
+                        </MUILink>
+                    </Tooltip>
+                ) : (
+                    0
+                )}
                 {!hideComments && (
                     <>
                         <IconButton
+                            component={Link}
+                            to={`/feed/post/${post.id}`}
                             sx={{ marginLeft: 2 }}
-                            onClick={viewComments}
                         >
                             <ChatIcon />
                         </IconButton>
