@@ -41,7 +41,10 @@ const CreatePost = () => {
                 author: uid,
                 timestamp: serverTimestamp(),
             })
-            await uploadBytes(ref(storage, `posts/${newDoc.id}`), selectedFile)
+            await uploadBytes(
+                ref(storage, `posts/${uid}/${newDoc.id}`),
+                selectedFile
+            )
             setUploadLoading(false)
             navigate(`/feed/${newDoc.id}`)
         } catch (e: any) {

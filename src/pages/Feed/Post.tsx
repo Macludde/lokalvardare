@@ -43,8 +43,8 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        getDownloadURL(ref(storage, `posts/${post.id}`)).then((url) =>
-            setImageURL(url)
+        getDownloadURL(ref(storage, `posts/${post.author}/${post.id}`)).then(
+            (url) => setImageURL(url)
         )
     }, [post.id])
 
