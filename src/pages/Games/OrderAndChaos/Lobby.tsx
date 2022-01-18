@@ -56,7 +56,7 @@ const OrderAndChaosLobby = () => {
     return (
         <Paper sx={{ padding: 4 }}>
             <Typography variant="h4" sx={{ marginBottom: 4 }}>
-                Lobby
+                Lobby | Order and Chaos
             </Typography>
             <Box mb={2}>
                 {lobby.players.map((player) => (
