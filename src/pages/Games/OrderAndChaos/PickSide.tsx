@@ -1,11 +1,10 @@
 import { Tooltip } from '@material-ui/core'
 import { Box, Button, Paper, Typography } from '@mui/material'
-import React, { useState } from 'react'
-import { pickSide, playMarker } from '../../../api/games/OrderAndChaos/game'
+import React from 'react'
+import { pickSide } from '../../../api/games/OrderAndChaos/game'
 import { InitialGameState } from '../../../api/games/OrderAndChaos/types'
 import UserName from '../../../components/dynamics/UserName'
 import useAuth from '../../../hooks/useAuth'
-import { ContainerBox, SelectionMarker } from './styled'
 
 type PickSideProps = {
     gameId: string

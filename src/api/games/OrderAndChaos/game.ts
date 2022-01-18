@@ -17,7 +17,7 @@ const base = 'games/order-and-chaos'
 export const generateEmptyBoard = () =>
     new Array(6)
         .fill(0)
-        .map((_, i) => new Array(6).fill(0).map(() => 'empty')) as CellState[][]
+        .map(() => new Array(6).fill(0).map(() => 'empty')) as CellState[][]
 
 export const flattenBoard = (board: CellState[][]) =>
     board.reduce((acc, row) => [...acc, ...row], [])

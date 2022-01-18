@@ -27,7 +27,7 @@ const ClipboardCopy: React.FC<ClipboardCopyProps> = ({
             sx={{ display: 'block', overflow: 'hidden' }}
             onClick={() => {
                 setHasClicked(true)
-                navigator.clipboard.writeText(document.location.href)
+                navigator.clipboard.writeText(textToCopy)
             }}
             ref={buttonRef}
         >

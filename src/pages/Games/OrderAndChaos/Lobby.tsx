@@ -1,6 +1,5 @@
 import { Box, Button, Paper, Typography } from '@mui/material'
 import { FirestoreError } from 'firebase/firestore'
-import { hostname } from 'os'
 import React from 'react'
 import { useDocumentData } from 'react-firebase-hooks/firestore'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -21,7 +20,7 @@ const OrderAndChaosLobby = () => {
     const navigate = useNavigate()
     const { uid } = useAuth()
     const lobbyId = id ?? 'never'
-    const [lobby, isLoading, error] = useDocumentData(getLobbyDoc(lobbyId), {
+    const [lobby, isLoading] = useDocumentData(getLobbyDoc(lobbyId), {
         transform: (val) => val as Lobby,
     }) as [Lobby | undefined, boolean, FirestoreError | undefined]
 
