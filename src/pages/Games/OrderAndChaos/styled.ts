@@ -70,8 +70,6 @@ const directionToRotation: Record<Direction, string> = {
     reverseDiagonal: '135deg',
 }
 
-const WinLineColor = 'green'
-
 export const WinLine = styled(Box)<{
     row: number
     col: number
@@ -84,13 +82,12 @@ export const WinLine = styled(Box)<{
         p.direction === 'horizontal' || p.direction === 'vertical'
             ? straightLength
             : diagonalLength};
-    background-color: ${WinLineColor};
+    background-color: green;
     height: 12px;
     transform-origin: 6px 6px;
     transform: translate(-6px, -6px)
         rotate(${(p) => directionToRotation[p.direction]});
 
-    opacity: 0.8;
-    box-shadow: 0 0 6px ${WinLineColor};
+    box-shadow: 0 0 4px 2px black;
     border-radius: 1000px;
 `
