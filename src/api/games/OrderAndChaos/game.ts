@@ -7,25 +7,24 @@ import {
     serverTimestamp,
     updateDoc,
 } from 'firebase/firestore'
-import { CellState, FlattenedBoardState, Lobby } from './types'
+import { CellState, FlattenedBoardState } from './types'
 
 const db = getFirestore()
 
 const base = 'games/order-and-chaos'
 
-const generateEmptyBoard = (width: number, height: number) =>
-    new Array(height)
+const generateEmptyBoard = () =>
+    new Array(6)
         .fill(0)
-        .map((_, i) =>
-            new Array(width).fill(0).map(() => 'empty')
-        ) as CellState[][]
+        .map((_, i) => new Array(6).fill(0).map(() => 'empty')) as CellState[][]
 
 export const flattenBoard = (board: CellState[][]) =>
     board.reduce((acc, row) => [...acc, ...row], [])
 
-export const unflattenBoard = (board: FlattenedBoardState, width: number) =>
+const WIDTH = 6
+export const unflattenBoard = (board: FlattenedBoardState) =>
     board.reduce((acc: CellState[][], _, i) => {
-        if (i % width === 0) {
+        if (i % WIDTH === 0) {
             acc.push([])
         }
         acc[acc.length - 1].push(board[i])
@@ -70,16 +69,15 @@ export const updateGameId = (lobbyId: string, gameId: string) =>
 export const pickSide = (
     gameId: string,
     side: 'order' | 'chaos',
-    playerIndex: number,
-    width: number,
-    height: number
+    playerIndex: number
 ) => {
     const orderPlayer = side === 'order' ? playerIndex : playerIndex * 2 - 1
     updateDoc(doc(db, `${base}/games/${gameId}`), {
         currentPlayer: orderPlayer,
-        board: flattenBoard(generateEmptyBoard(width, height)),
+        board: flattenBoard(generateEmptyBoard()),
         orderPlayer,
         lastUpdated: serverTimestamp(),
+        hasBegun: true,
     })
 }
 
