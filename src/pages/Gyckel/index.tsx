@@ -5,7 +5,7 @@ const Gyckel = () => {
     return (
         <Box>
             <Typography variant="h3">När är nästa gyckel?</Typography>
-            <Typography>På nästa sittning 😎</Typography>
+            <Typography variant="body1">På nästa sittning 😎</Typography>
         </Box>
     )
 }

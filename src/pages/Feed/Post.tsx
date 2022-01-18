@@ -76,7 +76,7 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
             }
             getURL(0)
         }
-    }, [post.id, post.author, post.type])
+    }, [post.id, post.author, post.type, post.fileName])
 
     const toggleLike = () => {
         if (!uid) return
@@ -193,7 +193,9 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
                 </Box>
             )
         }
-        return <Typography>Innehållstypen stödjs inte</Typography>
+        return (
+            <Typography component="div">Innehållstypen stödjs inte</Typography>
+        )
     }
 
     /* Instantly updates likes when clicking */
@@ -214,7 +216,9 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
                 <Typography variant="h4">{post.title}</Typography>
                 {uid === post.author && <PostMenu onDeletePost={deletePost} />}
             </Box>
-            <Typography fontSize={12}>{author?.name ?? ''}</Typography>
+            <Typography component="div" fontSize={12}>
+                {author?.name ?? ''}
+            </Typography>
             {renderContent()}
             <Box display="flex" alignItems="center">
                 {!isGuest ? (

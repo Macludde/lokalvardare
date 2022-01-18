@@ -55,7 +55,9 @@ const LikesModal: React.FC<LikesModalProps> = ({ likeUIDs, onClose }) => {
                         Användare som gillar
                     </Typography>
                     {users?.map((user) => (
-                        <Typography key={user.uid}>{user.name}</Typography>
+                        <Typography component="div" key={user.uid}>
+                            {user.name}
+                        </Typography>
                     ))}
                 </Box>
             )}

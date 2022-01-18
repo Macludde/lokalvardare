@@ -22,6 +22,7 @@ const Login = () => {
                 }}
             >
                 <Typography
+                    variant="h4"
                     sx={{
                         textAlign: 'center',
                         marginBottom: 2,
