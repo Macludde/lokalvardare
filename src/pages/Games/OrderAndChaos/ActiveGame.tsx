@@ -42,13 +42,19 @@ const Cell = ({
 }) => {
     const [isHovering, setIsHovering] = useState(false)
 
+    const onClick = () => {
+        if (isMyTurn && state === 'empty') {
+            onSelect()
+        }
+    }
+
     return (
         <CellBox
             borderColor="text.secondary"
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={() => setIsHovering(false)}
             isHovering={isMyTurn && state === 'empty' && isHovering}
-            onClick={isMyTurn ? onSelect : undefined}
+            onClick={onClick}
         >
             {(state !== 'empty' && (
                 <Marker
