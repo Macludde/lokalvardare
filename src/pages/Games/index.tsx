@@ -14,7 +14,11 @@ const GameInfo = [
     {
         name: 'Order and Chaos',
         description:
-            'Två spelare, fem-i-rad på ett 6x6 bräde. Båda spelarna styr båda färger. En spelare ("Order") försöker få fem i rad med någon färg. Den andra spelaren ("Kaos") försöker stoppa Order från att uppnå sitt mål.',
+            'Två spelare, fem-i-rad på ett 6x6 bräde. ' +
+            'Båda spelarna styr båda färger. ' +
+            'En spelare ("Order") försöker få fem i rad med någon färg. ' +
+            'Den andra spelaren ("Kaos") försöker stoppa ' +
+            ' Order från att uppnå sitt mål.',
         path: '/games/order-and-chaos',
         component: <OrderAndChaos />,
     },

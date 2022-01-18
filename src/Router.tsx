@@ -1,4 +1,3 @@
-import HomeIcon from '@mui/icons-material/Home'
 import React, { JSXElementConstructor, ReactElement } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import Account from './pages/Account'

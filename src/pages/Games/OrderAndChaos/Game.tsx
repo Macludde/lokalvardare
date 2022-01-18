@@ -1,4 +1,4 @@
-import { CircularProgress, Paper } from '@mui/material'
+import { Paper } from '@mui/material'
 import { FirebaseError } from 'firebase/app'
 import React from 'react'
 import { useDocumentData } from 'react-firebase-hooks/firestore'
@@ -12,7 +12,7 @@ import OrderAndChaosPickSide from './PickSide'
 const OrderAndChaosGame = () => {
     const { id } = useParams()
     const gameId = id ?? 'never'
-    const [state, isLoading, error] = useDocumentData(
+    const [state, isLoading] = useDocumentData(
         getGameDoc(gameId ?? 'never')
     ) as [GameState | undefined, boolean, FirebaseError | undefined]
 

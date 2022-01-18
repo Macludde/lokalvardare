@@ -1,5 +1,4 @@
-import { getAuth, User } from 'firebase/auth'
-import { getFirestore, doc } from 'firebase/firestore'
+import { doc, getFirestore } from 'firebase/firestore'
 import React from 'react'
 import { useDocumentDataOnce } from 'react-firebase-hooks/firestore'
 
