@@ -1,14 +1,14 @@
-import { Box, Button, Paper, Typography } from '@mui/material'
+import { LoadingButton } from '@mui/lab'
+import { Box, Paper, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import {
-    flattenBoard,
-    generateEmptyBoard,
+    askForRematch,
     playMarker,
+    setupRematch,
     unflattenBoard,
 } from '../../../api/games/OrderAndChaos/game'
 import {
     CellState,
-    FlattenedBoardState,
     RegularGameState,
 } from '../../../api/games/OrderAndChaos/types'
 import UserName from '../../../components/dynamics/UserName'
@@ -193,13 +193,6 @@ const OrderAndChaosActiveGame: React.FC<ActiveGameProps> = ({
         state.winningPlayer !== undefined
             ? state.players[state.winningPlayer]
             : undefined
-    console.log(state.winningPlayer)
-
-    useEffect(() => {
-        const unflattenedBoard = unflattenBoard(state.board)
-        setBoard(unflattenedBoard)
-        setWinInfo(hasWon(unflattenedBoard))
-    }, [state.board])
 
     const onSelect = (row: number, col: number) => {
         const newBoard = [...state.board]
@@ -218,6 +211,51 @@ const OrderAndChaosActiveGame: React.FC<ActiveGameProps> = ({
         setBoard(unflattenedBoard)
         playMarker(gameId, newBoard, newPlayer, newWinningPlayer)
     }
+
+    const rematch = () => {
+        if (
+            state.wantsRematch !== undefined &&
+            state.players.every(
+                (p) => p === uid || state.wantsRematch?.includes(p)
+            )
+        ) {
+            setupRematch(gameId)
+            return
+        }
+        askForRematch(gameId, uid)
+    }
+
+    useEffect(() => {
+        const unflattenedBoard = unflattenBoard(state.board)
+        setBoard(unflattenedBoard)
+        const newWinInfo = hasWon(unflattenedBoard)
+        setWinInfo(newWinInfo)
+        // Randomly place markers, for testing purposes
+        /* if (state.currentPlayer === myIndex) {
+            setSelectedColor(Math.floor(Math.random() * 2))
+            let row
+            let col
+            do {
+                row = Math.floor(Math.random() * 6)
+                col = Math.floor(Math.random() * 6)
+            } while (
+                unflattenedBoard[row][col] !== 'empty' &&
+                newWinInfo === null
+            )
+            if (newWinInfo === null) {
+                onSelect(row, col)
+            }
+        } */
+    }, [state.board, state.currentPlayer])
+
+    useEffect(() => {
+        if (
+            state.wantsRematch &&
+            state.players.every((p) => state.wantsRematch?.includes(p))
+        ) {
+            setupRematch(gameId)
+        }
+    }, [state.wantsRematch, state.players, gameId])
 
     return (
         <Box>
@@ -277,6 +315,16 @@ const OrderAndChaosActiveGame: React.FC<ActiveGameProps> = ({
                             )}
                         </Typography>
                     </Box>
+                )}
+                {winningPlayer !== undefined && (
+                    <LoadingButton
+                        loading={state.wantsRematch?.includes(uid)}
+                        onClick={rematch}
+                        variant="contained"
+                        sx={{ marginTop: 2 }}
+                    >
+                        Kör igen?
+                    </LoadingButton>
                 )}
             </Paper>
             <Paper variant="elevation" sx={{ padding: 4 }}>

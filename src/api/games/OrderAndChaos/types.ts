@@ -20,6 +20,7 @@ export interface RegularGameState {
     lobbyId: string
     hasBegun: true
     winningPlayer?: number
+    wantsRematch?: string[]
 }
 
 export type GameState = InitialGameState | RegularGameState

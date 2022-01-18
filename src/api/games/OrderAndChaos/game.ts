@@ -2,6 +2,7 @@ import {
     addDoc,
     arrayUnion,
     collection,
+    deleteField,
     doc,
     getFirestore,
     serverTimestamp,
@@ -45,7 +46,7 @@ export const createLobby = async (uid: string) => {
 }
 
 export const joinLobby = (lobbyId: string, uid: string) =>
-    updateDoc(doc(db, `${base}/lobbies/${lobbyId}`), {
+    updateDoc(getLobbyDoc(lobbyId), {
         players: arrayUnion(uid),
     })
 
@@ -62,7 +63,7 @@ export const play = async (lobbyId: string, players: string[]) => {
 }
 
 export const updateGameId = (lobbyId: string, gameId: string) =>
-    updateDoc(doc(db, `${base}/lobbies/${lobbyId}`), {
+    updateDoc(getLobbyDoc(lobbyId), {
         gameId,
     })
 
@@ -72,7 +73,7 @@ export const pickSide = (
     playerIndex: number
 ) => {
     const orderPlayer = side === 'order' ? playerIndex : -playerIndex + 1
-    updateDoc(doc(db, `${base}/games/${gameId}`), {
+    updateDoc(getGameDoc(gameId), {
         currentPlayer: orderPlayer,
         board: flattenBoard(generateEmptyBoard()),
         orderPlayer,
@@ -87,9 +88,27 @@ export const playMarker = (
     newPlayer: number,
     winningPlayer?: number
 ) =>
-    updateDoc(doc(db, `${base}/games/${gameId}`), {
+    updateDoc(getGameDoc(gameId), {
         board: newBoard,
         currentPlayer: newPlayer,
         lastUpdated: serverTimestamp(),
         winningPlayer,
+    })
+
+export const askForRematch = (gameId: string, playerId: string) => {
+    updateDoc(getGameDoc(gameId), {
+        wantsRematch: arrayUnion(playerId),
+    })
+}
+
+export const setupRematch = (gameId: string) =>
+    updateDoc(getGameDoc(gameId), {
+        playerToPick: Math.floor(Math.random() * 2),
+        hasBegun: false,
+        board: deleteField(),
+        lastUpdated: serverTimestamp(),
+        currentPlayer: deleteField(),
+        orderPlayer: deleteField(),
+        winningPlayer: deleteField(),
+        wantsRematch: deleteField(),
     })
