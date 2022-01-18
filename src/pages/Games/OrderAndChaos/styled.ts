@@ -52,3 +52,45 @@ export const SelectionMarker = styled(Marker)<{
         box-shadow: 0 0 6px ${(p) => p.color};
     }
 `
+
+const straightLength = 'calc(67% + 12px)'
+const diagonalLength = 'calc(94% + 12px)'
+
+const posToPercentage = (pos: number) => `${pos * (100 / 6) + 100 / 6 / 2}%`
+
+export type Direction =
+    | 'horizontal'
+    | 'vertical'
+    | 'diagonal'
+    | 'reverseDiagonal'
+const directionToRotation: Record<Direction, string> = {
+    horizontal: '0deg',
+    vertical: '90deg',
+    diagonal: '45deg',
+    reverseDiagonal: '135deg',
+}
+
+const WinLineColor = 'green'
+
+export const WinLine = styled(Box)<{
+    row: number
+    col: number
+    direction: Direction
+}>`
+    position: absolute;
+    top: ${(p) => posToPercentage(p.row)};
+    left: ${(p) => posToPercentage(p.col)};
+    width: ${(p) =>
+        p.direction === 'horizontal' || p.direction === 'vertical'
+            ? straightLength
+            : diagonalLength};
+    background-color: ${WinLineColor};
+    height: 12px;
+    transform-origin: 6px 6px;
+    transform: translate(-6px, -6px)
+        rotate(${(p) => directionToRotation[p.direction]});
+
+    opacity: 0.8;
+    box-shadow: 0 0 6px ${WinLineColor};
+    border-radius: 1000px;
+`

@@ -13,7 +13,7 @@ const db = getFirestore()
 
 const base = 'games/order-and-chaos'
 
-const generateEmptyBoard = () =>
+export const generateEmptyBoard = () =>
     new Array(6)
         .fill(0)
         .map((_, i) => new Array(6).fill(0).map(() => 'empty')) as CellState[][]
@@ -71,7 +71,7 @@ export const pickSide = (
     side: 'order' | 'chaos',
     playerIndex: number
 ) => {
-    const orderPlayer = side === 'order' ? playerIndex : playerIndex * 2 - 1
+    const orderPlayer = side === 'order' ? playerIndex : -playerIndex + 1
     updateDoc(doc(db, `${base}/games/${gameId}`), {
         currentPlayer: orderPlayer,
         board: flattenBoard(generateEmptyBoard()),
@@ -85,11 +85,11 @@ export const playMarker = (
     gameId: string,
     newBoard: FlattenedBoardState,
     newPlayer: number,
-    hasWon?: boolean
+    winningPlayer?: number
 ) =>
     updateDoc(doc(db, `${base}/games/${gameId}`), {
         board: newBoard,
         currentPlayer: newPlayer,
         lastUpdated: serverTimestamp(),
-        hasWon,
+        winningPlayer,
     })

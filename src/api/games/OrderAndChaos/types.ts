@@ -13,12 +13,13 @@ export interface InitialGameState {
 
 export interface RegularGameState {
     players: string[] // UIDs of Players in lobby
-    currentPlayer?: number // index of current player
+    currentPlayer: number // index of current player
     board: FlattenedBoardState
-    orderPlayer?: number // index of which player is "order"
+    orderPlayer: number // index of which player is "order"
     lastUpdated: Timestamp
     lobbyId: string
     hasBegun: true
+    winningPlayer?: number
 }
 
 export type GameState = InitialGameState | RegularGameState
