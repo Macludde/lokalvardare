@@ -1,7 +1,9 @@
+import { Tooltip } from '@material-ui/core'
 import { Box, Button, Paper, Typography } from '@mui/material'
 import React, { useState } from 'react'
 import { pickSide, playMarker } from '../../../api/games/OrderAndChaos/game'
 import { InitialGameState } from '../../../api/games/OrderAndChaos/types'
+import UserName from '../../../components/dynamics/UserName'
 import useAuth from '../../../hooks/useAuth'
 import { ContainerBox, SelectionMarker } from './styled'
 
@@ -28,20 +30,34 @@ const OrderAndChaosPickSide: React.FC<PickSideProps> = ({
             <Paper variant="elevation" sx={{ padding: 4 }}>
                 {isPicking ? (
                     <Box>
-                        <Typography>Välj en sida</Typography>
+                        <Typography variant="h5" sx={{ marginBottom: 2 }}>
+                            Välj en sida
+                        </Typography>
                         <Box>
-                            <Button onClick={() => selectSide('order')}>
-                                Order
-                            </Button>
-                            <Button onClick={() => selectSide('chaos')}>
-                                Kaos
-                            </Button>
+                            <Tooltip title="Försök få 5 i rad">
+                                <Button
+                                    variant="contained"
+                                    onClick={() => selectSide('order')}
+                                    sx={{ marginRight: 4 }}
+                                >
+                                    Order
+                                </Button>
+                            </Tooltip>
+                            <Tooltip title="Försök stoppa order från att få 5 i rad">
+                                <Button
+                                    variant="contained"
+                                    onClick={() => selectSide('chaos')}
+                                >
+                                    Kaos
+                                </Button>
+                            </Tooltip>
                         </Box>
                     </Box>
                 ) : (
-                    <Typography>
-                        Väntar på att {state.players[state.playerToPick]} väljer
-                        en sida
+                    <Typography variant="h5">
+                        Väntar på att{' '}
+                        <UserName uid={state.players[state.playerToPick]} />{' '}
+                        väljer en sida
                     </Typography>
                 )}
             </Paper>

@@ -131,9 +131,9 @@ const hasWon: (board: CellState[][]) => WinInfo = (board: CellState[][]) => {
             if (
                 board[row][col] !== 'empty' &&
                 board[row][col] === board[row + 1][col - 1] &&
-                board[row][col] === board[row + 2][col + 2] &&
-                board[row][col] === board[row + 3][col + 3] &&
-                board[row][col] === board[row + 4][col + 4]
+                board[row][col] === board[row + 2][col - 2] &&
+                board[row][col] === board[row + 3][col - 3] &&
+                board[row][col] === board[row + 4][col - 4]
             ) {
                 return {
                     row,
@@ -183,9 +183,11 @@ const OrderAndChaosActiveGame: React.FC<ActiveGameProps> = ({
 
     const myIndex = state.players.indexOf(uid)
 
-    const winningPlayer = state.winningPlayer
-        ? state.players[state.winningPlayer]
-        : undefined
+    const winningPlayer =
+        state.winningPlayer !== undefined
+            ? state.players[state.winningPlayer]
+            : undefined
+    console.log(state.winningPlayer)
 
     useEffect(() => {
         const unflattenedBoard = unflattenBoard(state.board)
@@ -213,7 +215,30 @@ const OrderAndChaosActiveGame: React.FC<ActiveGameProps> = ({
 
     return (
         <Box>
-            <Paper variant="elevation" sx={{ padding: 2, marginBottom: 4 }}>
+            <Paper
+                variant="elevation"
+                sx={{
+                    padding: 2,
+                    marginBottom: 4,
+                    boxShadow:
+                        winningPlayer !== undefined
+                            ? `0 0 16px 8px ${
+                                  winningPlayer === uid
+                                      ? 'darkgreen'
+                                      : 'darkred'
+                              }`
+                            : undefined,
+                }}
+            >
+                <Typography variant="h5">
+                    Du spelar som{' '}
+                    <b>{state.orderPlayer === myIndex ? 'Order' : 'Kaos'}</b>
+                </Typography>
+                <Typography variant="h6" sx={{ marginBottom: 2 }}>
+                    {state.orderPlayer === myIndex
+                        ? 'Du vill få 5 i rad av någon färg.'
+                        : 'Du vill stoppa den andra spelaren från att få 5 i rad, i någon färg.'}
+                </Typography>
                 {winningPlayer === undefined ? (
                     <Box
                         display="flex"

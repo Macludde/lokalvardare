@@ -182,10 +182,12 @@ const Comment: React.FC<CommentProps> = ({
                         </IconButton>
                     )}
                     <Box>
-                        <Typography sx={{ fontSize: 12 }}>
+                        <Typography component="div" sx={{ fontSize: 12 }}>
                             {author?.name}
                         </Typography>
-                        <Typography sx={{}}>{comment.content}</Typography>
+                        <Typography component="div" sx={{}}>
+                            {comment.content}
+                        </Typography>
                         <Box>
                             <IconButton
                                 onClick={toggleLike}

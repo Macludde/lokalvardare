@@ -14,7 +14,7 @@ const GameInfo = [
     {
         name: 'Order and Chaos',
         description:
-            'Två spelare, 5 i rad. En spelare styr båda färger och försöker få fem i rad med någon färg. Den andra spelaren försöker stoppa spelare 1 från att uppnå sitt mål.',
+            'Två spelare, fem-i-rad på ett 6x6 bräde. Båda spelarna styr båda färger. En spelare ("Order") försöker få fem i rad med någon färg. Den andra spelaren ("Kaos") försöker stoppa Order från att uppnå sitt mål.',
         path: '/games/order-and-chaos',
         component: <OrderAndChaos />,
     },
@@ -36,8 +36,12 @@ const Games = () => {
                 <Card key={game.name}>
                     <CardActionArea onClick={() => navigate(game.path)}>
                         <CardContent>
-                            <Typography variant="h3">{game.name}</Typography>
-                            <Typography>{game.description}</Typography>
+                            <Typography variant="h3" sx={{ marginBottom: 2 }}>
+                                {game.name}
+                            </Typography>
+                            <Typography variant="body1">
+                                {game.description}
+                            </Typography>
                         </CardContent>
                     </CardActionArea>
                 </Card>

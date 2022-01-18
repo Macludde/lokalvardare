@@ -30,7 +30,7 @@ const OrderAndChaos = () => {
     }
     return (
         <Box>
-            <Typography>Order och Kaos</Typography>
+            <Typography variant="h4">Order och Kaos</Typography>
             <Button variant="contained" onClick={createNewLobby}>
                 Create lobby
             </Button>

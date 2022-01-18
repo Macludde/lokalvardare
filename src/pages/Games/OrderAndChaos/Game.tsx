@@ -1,10 +1,11 @@
-import { Paper } from '@mui/material'
+import { CircularProgress, Paper } from '@mui/material'
 import { FirebaseError } from 'firebase/app'
 import React from 'react'
 import { useDocumentData } from 'react-firebase-hooks/firestore'
 import { useParams } from 'react-router-dom'
 import { getGameDoc } from '../../../api/games/OrderAndChaos/game'
 import { GameState } from '../../../api/games/OrderAndChaos/types'
+import Loading from '../../Loading'
 import OrderAndChaosActiveGame from './ActiveGame'
 import OrderAndChaosPickSide from './PickSide'
 
@@ -16,7 +17,11 @@ const OrderAndChaosGame = () => {
     ) as [GameState | undefined, boolean, FirebaseError | undefined]
 
     if (!state || isLoading) {
-        return <Paper>Loading...</Paper>
+        return (
+            <Paper>
+                <Loading />
+            </Paper>
+        )
     }
 
     if (!state.hasBegun) {

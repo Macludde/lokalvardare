@@ -82,11 +82,15 @@ const Comments = () => {
                     title="Ny kommentar"
                 />
             ) : (
-                <Typography color="text.secondary" fontSize={12}>
+                <Typography
+                    component="div"
+                    color="text.secondary"
+                    fontSize={12}
+                >
                     Du måste vara inloggad med Google för att kunna kommentera
                 </Typography>
             )}
-            <Typography sx={{ marginY: 2 }}>
+            <Typography component="div" sx={{ marginY: 2 }}>
                 {amountOfComments}{' '}
                 {amountOfComments === 1 ? 'kommentar' : 'kommentarer'}
             </Typography>

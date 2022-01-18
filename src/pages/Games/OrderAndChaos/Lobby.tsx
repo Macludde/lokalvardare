@@ -11,7 +11,10 @@ import {
     updateGameId,
 } from '../../../api/games/OrderAndChaos/game'
 import { Lobby } from '../../../api/games/OrderAndChaos/types'
+import UserName from '../../../components/dynamics/UserName'
+import ClipboardCopy from '../../../components/ui/ClipboardCopy'
 import useAuth from '../../../hooks/useAuth'
+import Loading from '../../Loading'
 
 const OrderAndChaosLobby = () => {
     const { id } = useParams()
@@ -23,7 +26,11 @@ const OrderAndChaosLobby = () => {
     }) as [Lobby | undefined, boolean, FirestoreError | undefined]
 
     if (!lobby || isLoading) {
-        return <Paper sx={{ padding: 4 }}>Loading...</Paper>
+        return (
+            <Paper sx={{ padding: 4 }}>
+                <Loading />
+            </Paper>
+        )
     }
 
     const join = () => {
@@ -48,24 +55,49 @@ const OrderAndChaosLobby = () => {
     }
     return (
         <Paper sx={{ padding: 4 }}>
-            <Typography>Lobby</Typography>
-            <Box>
+            <Typography variant="h4" sx={{ marginBottom: 4 }}>
+                Lobby
+            </Typography>
+            <Box mb={2}>
                 {lobby.players.map((player) => (
-                    <Typography key={player}>
-                        {player}
-                        {player === lobby.admin && '*'}
+                    <Typography key={player} component="div">
+                        <UserName uid={player} />
+                        {player === lobby.admin && (
+                            <Typography
+                                component="span"
+                                sx={{
+                                    fontStyle: 'italic',
+                                    color: 'text.secondary',
+                                    display: 'inline',
+                                    marginLeft: 1,
+                                }}
+                            >
+                                värd
+                            </Typography>
+                        )}
                     </Typography>
                 ))}
             </Box>
-            <Typography>
-                Link:{' '}
-                <a href={document.location.href}>{document.location.href}</a>
-            </Typography>
+            <ClipboardCopy
+                title="Kopiera invite link"
+                textToCopy={document.location.href}
+            />
             {!lobby.players.includes(uid) && (
-                <Button onClick={join}>Gå med</Button>
+                <Button
+                    variant="contained"
+                    onClick={join}
+                    sx={{ marginTop: 4 }}
+                >
+                    Gå med
+                </Button>
             )}
             {lobby.admin === uid && (
-                <Button disabled={lobby.players.length < 2} onClick={startGame}>
+                <Button
+                    variant="contained"
+                    disabled={lobby.players.length < 2}
+                    onClick={startGame}
+                    sx={{ marginTop: 4 }}
+                >
                     Starta
                 </Button>
             )}
