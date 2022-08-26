@@ -8,9 +8,11 @@ const Feed = () => {
 
     return (
         <Box>
-            {posts.map((post) => (
-                <Post post={post} key={post.id} />
-            ))}
+            {posts
+                .filter((post) => !post.isHidden)
+                .map((post) => (
+                    <Post post={post} key={post.id} />
+                ))}
             {!reachedEnd && (
                 <Button onClick={loadMore} disabled={loading}>
                     Ladda fler

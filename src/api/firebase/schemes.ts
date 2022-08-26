@@ -11,6 +11,7 @@ type PostBase = {
     amountOfComments: number
     likes: string[]
     fileName?: string
+    isHidden?: boolean
 }
 export type OldPost = PostBase
 
