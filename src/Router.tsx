@@ -1,6 +1,9 @@
 import React, { JSXElementConstructor, ReactElement } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import Account from './pages/Account'
+import Bonga from './pages/Bonga'
+import Contestant from './pages/Bonga/Contestant'
+import Leaderboard from './pages/Bonga/Leaderboard'
 import Comments from './pages/Comments'
 import Feed from './pages/Feed'
 import CreatePost from './pages/Feed/CreatePost'
@@ -32,6 +35,22 @@ const baseRoutes: Route[] = [
         path: 'games',
         component: <Games />,
         inSidebar: true,
+    },
+    {
+        label: 'Bonga',
+        path: 'bonga',
+        component: <Bonga />,
+        inSidebar: true,
+    },
+    {
+        label: 'Contestant',
+        path: 'bonga/:id',
+        component: <Contestant />,
+    },
+    {
+        label: 'Leaderboard',
+        path: 'bonga/leaderboard',
+        component: <Leaderboard />,
     },
     {
         label: 'Konto',

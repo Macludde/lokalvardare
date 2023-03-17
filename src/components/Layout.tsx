@@ -26,6 +26,7 @@ const Layout: React.FC = ({ children }) => {
     const location = useLocation()
     const { toggleTheme } = React.useContext(ThemeContext)
     const { isLoggedIn } = useAuth()
+    const sidebarOpen = !location.pathname.includes('bonga')
 
     return (
         <Container>
@@ -45,11 +46,13 @@ const Layout: React.FC = ({ children }) => {
                 >
                     {/* Left side */}
                     <Box display="flex" flexDirection="row" alignItems="center">
-                        <img
-                            src={logo}
-                            alt="logo"
-                            style={{ height: '128px', marginRight: 24 }}
-                        />
+                        <a href="/">
+                            <img
+                                src={logo}
+                                alt="logo"
+                                style={{ height: '128px', marginRight: 24 }}
+                            />
+                        </a>
                     </Box>
                     {/* Right side */}
                     <Box display="flex" flexDirection="row" alignItems="center">
@@ -91,31 +94,36 @@ const Layout: React.FC = ({ children }) => {
                     </Box>
                 </Grid>
                 {/* Sidebar */}
-                <Grid item xs={12} md>
-                    <Paper
-                        style={{
-                            zIndex: 5,
-                            position: 'sticky',
-                            top: 24,
-                        }}
-                    >
-                        <List disablePadding>
-                            {sidebarRoutes.map((route, index) => (
-                                <ListItem
-                                    onClick={() => navigate(route.path)}
-                                    button
-                                    key={route.label}
-                                    divider={index !== sidebarRoutes.length - 1}
-                                    selected={
-                                        location.pathname === `/${route.path}`
-                                    }
-                                >
-                                    <ListItemText primary={route.label} />
-                                </ListItem>
-                            ))}
-                        </List>
-                    </Paper>
-                </Grid>
+                {sidebarOpen && (
+                    <Grid item xs={12} md>
+                        <Paper
+                            style={{
+                                zIndex: 5,
+                                position: 'sticky',
+                                top: 24,
+                            }}
+                        >
+                            <List disablePadding>
+                                {sidebarRoutes.map((route, index) => (
+                                    <ListItem
+                                        onClick={() => navigate(route.path)}
+                                        button
+                                        key={route.label}
+                                        divider={
+                                            index !== sidebarRoutes.length - 1
+                                        }
+                                        selected={
+                                            location.pathname ===
+                                            `/${route.path}`
+                                        }
+                                    >
+                                        <ListItemText primary={route.label} />
+                                    </ListItem>
+                                ))}
+                            </List>
+                        </Paper>
+                    </Grid>
+                )}
                 {/* Content */}
                 <Grid item xs={12} md={6}>
                     {children}
