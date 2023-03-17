@@ -5,9 +5,8 @@ import {
     getFirestore,
     orderBy,
     query,
-    Timestamp,
 } from 'firebase/firestore'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useParams } from 'react-router-dom'
 import {
     useCollectionData,
