@@ -1,6 +1,6 @@
 import { Button, Grid, Paper, Typography } from '@mui/material'
 import React from 'react'
-import { signInWithGoogle, signInAnonymously } from '../../api/firebase/auth'
+import { signInWithGoogle } from '../../api/firebase/auth'
 
 const Login = () => {
     return (
@@ -10,7 +10,10 @@ const Login = () => {
             direction="column"
             alignItems="center"
             justifyContent="center"
-            style={{ minHeight: '100vh' }}
+            sx={{
+                my: 16,
+                width: '100%',
+            }}
         >
             <Paper
                 elevation={3}
@@ -38,9 +41,6 @@ const Login = () => {
                     sx={{ marginY: 2 }}
                 >
                     Logga in med Google
-                </Button>
-                <Button variant="contained" onClick={signInAnonymously}>
-                    Logga in som Gäst
                 </Button>
             </Paper>
         </Grid>

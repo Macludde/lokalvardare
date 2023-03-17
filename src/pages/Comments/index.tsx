@@ -15,6 +15,7 @@ import {
 } from 'react-firebase-hooks/firestore'
 import { useParams } from 'react-router-dom'
 import { Comment as CommentType } from '../../api/firebase/schemes'
+import Layout from '../../components/Layout'
 import useAuth from '../../hooks/useAuth'
 import { PostWithID } from '../../hooks/usePosts'
 import Post from '../Feed/Post'
@@ -26,7 +27,7 @@ const db = getFirestore()
 
 const Comments = () => {
     const { id } = useParams()
-    const { uid, isAnonymous: isGuest } = useAuth()
+    const { uid, isLoggedIn } = useAuth()
     const [post, postLoading, postError] = useDocumentData(
         doc(db, 'posts', id ?? 'never'),
         {
@@ -74,7 +75,7 @@ const Comments = () => {
     return (
         <Post post={post as unknown as PostWithID} hideComments>
             <Box marginTop={2} />
-            {!isGuest ? (
+            {isLoggedIn ? (
                 <CommentInput
                     onSubmit={async (text) => {
                         await postComment(text, 'root')

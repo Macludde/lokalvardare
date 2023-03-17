@@ -36,7 +36,7 @@ const db = getFirestore()
 const storage = getStorage()
 
 const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
-    const { uid, isAnonymous: isGuest } = useAuth()
+    const { uid, isLoggedIn } = useAuth()
     // TODO: Comment these out and use them
     const [author /* , authorLoading, authorError */] = useDocumentDataOnce(
         doc(db, 'users', post.author),
@@ -221,7 +221,7 @@ const Post: React.FC<PostProps> = ({ post, hideComments, children }) => {
             </Typography>
             {renderContent()}
             <Box display="flex" alignItems="center">
-                {!isGuest ? (
+                {isLoggedIn ? (
                     <IconButton onClick={toggleLike}>
                         {isLiked ? (
                             <FavoriteIcon color="primary" />

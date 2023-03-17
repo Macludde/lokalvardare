@@ -25,15 +25,15 @@ const CreatePost = () => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
     const [textContent, setTextContent] = useState('')
     const [uploadLoading, setUploadLoading] = useState(false)
-    const { uid, isAnonymous: isGuest } = useAuth()
+    const { uid, isLoggedIn } = useAuth()
     const [contentType, setContentType] = useState<Post['type']>('image')
     const navigate = useNavigate()
 
     useEffect(() => {
-        if (isGuest) {
+        if (!isLoggedIn) {
             navigate(routes[0].path)
         }
-    }, [isGuest, navigate])
+    }, [isLoggedIn, navigate])
 
     const handleUploadClick: React.ChangeEventHandler<HTMLInputElement> = (
         event

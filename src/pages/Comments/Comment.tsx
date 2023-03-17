@@ -37,7 +37,7 @@ const Comment: React.FC<CommentProps> = ({
     childComments,
     onReply,
 }) => {
-    const { uid, isAnonymous: isGuest } = useAuth()
+    const { uid, isLoggedIn } = useAuth()
     // TODO: Uncomment this and use it
     const [author, authorLoading /* , authorError */] = useDocumentDataOnce(
         doc(db, 'users', comment.author),
@@ -203,7 +203,7 @@ const Comment: React.FC<CommentProps> = ({
                         </Box>
                     </Box>
                 </Box>
-                {!isGuest && (
+                {isLoggedIn && (
                     <Box>
                         {comment.author === uid && (
                             <IconButton onClick={deleteComment}>

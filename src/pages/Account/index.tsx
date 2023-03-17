@@ -5,6 +5,7 @@ import { useDocumentData } from 'react-firebase-hooks/firestore'
 import { signOut } from '../../api/firebase/auth'
 import { db } from '../../api/firebase/config'
 import { User } from '../../api/firebase/schemes'
+import AuthGate from '../../components/AuthGate'
 import useAuth from '../../hooks/useAuth'
 import Loading from '../Loading'
 
@@ -46,52 +47,52 @@ const Account = () => {
     }
 
     return (
-        <Fade in>
-            <Paper sx={{ padding: 4 }}>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'flex-start',
-                    }}
-                >
-                    <Typography variant="h4">
-                        {user.isAnonymous ? 'Gästkonto' : 'Konto'}
-                    </Typography>
-                    {!user.isAnonymous && (
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                marginTop: 4,
-                                marginRight: 4,
-                            }}
-                            ref={loaderContainerRef}
-                        >
-                            <TextField
-                                label="Name"
-                                value={newName}
-                                variant="outlined"
-                                onChange={(e) => {
-                                    setNewName(e.currentTarget.value)
-                                }}
-                            />
-                        </Box>
-                    )}
-
-                    <Button
-                        variant="contained"
-                        color="secondary"
-                        onClick={signOut}
+        <AuthGate>
+            <Fade in>
+                <Paper sx={{ padding: 4 }}>
+                    <Box
                         sx={{
-                            marginTop: 4,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'flex-start',
                         }}
                     >
-                        Sign out
-                    </Button>
-                </Box>
-            </Paper>
-        </Fade>
+                        <Typography variant="h4">Konto</Typography>
+                        {user.isLoggedIn && (
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    marginTop: 4,
+                                    marginRight: 4,
+                                }}
+                                ref={loaderContainerRef}
+                            >
+                                <TextField
+                                    label="Name"
+                                    value={newName}
+                                    variant="outlined"
+                                    onChange={(e) => {
+                                        setNewName(e.currentTarget.value)
+                                    }}
+                                />
+                            </Box>
+                        )}
+
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={signOut}
+                            sx={{
+                                marginTop: 4,
+                            }}
+                        >
+                            Sign out
+                        </Button>
+                    </Box>
+                </Paper>
+            </Fade>
+        </AuthGate>
     )
 }
 

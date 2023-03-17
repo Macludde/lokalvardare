@@ -20,21 +20,18 @@ const baseRoutes: Route[] = [
         path: 'feed',
         component: <Feed />,
         inSidebar: true,
-        // icon: HomeIcon,
     },
     {
         label: 'Gyckel',
         path: 'gyckel',
         component: <Gyckel />,
-        inSidebar: true,
-        // icon: HomeIcon,
+        inSidebar: false,
     },
     {
         label: 'Spel',
         path: 'games',
         component: <Games />,
         inSidebar: true,
-        // icon: HomeIcon,
     },
     {
         label: 'Konto',

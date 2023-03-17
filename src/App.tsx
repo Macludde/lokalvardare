@@ -1,8 +1,9 @@
 import { CssBaseline, ThemeProvider as MuiThemeProvider } from '@mui/material'
 import React, { createContext, useEffect, useState } from 'react'
 import { BrowserRouter } from 'react-router-dom'
+import './api/firebase/config'
 import { ThemeProvider as StyledThemeProvider } from 'styled-components'
-import AuthGate from './components/AuthGate'
+import AuthProvider from './components/AuthProvider'
 import Layout from './components/Layout'
 import Router from './Router'
 import defaultTheme from './styles/theme'
@@ -37,11 +38,11 @@ const App = () => {
                 <CssBaseline />
                 <StyledThemeProvider theme={defaultTheme.styled}>
                     <ThemeContext.Provider value={{ toggleTheme }}>
-                        <AuthGate>
+                        <AuthProvider>
                             <Layout>
                                 <Router />
                             </Layout>
-                        </AuthGate>
+                        </AuthProvider>
                     </ThemeContext.Provider>
                 </StyledThemeProvider>
             </MuiThemeProvider>

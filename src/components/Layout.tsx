@@ -25,7 +25,7 @@ const Layout: React.FC = ({ children }) => {
     const navigate = useNavigate()
     const location = useLocation()
     const { toggleTheme } = React.useContext(ThemeContext)
-    const { isAnonymous: isGuest } = useAuth()
+    const { isLoggedIn } = useAuth()
 
     return (
         <Container>
@@ -53,7 +53,7 @@ const Layout: React.FC = ({ children }) => {
                     </Box>
                     {/* Right side */}
                     <Box display="flex" flexDirection="row" alignItems="center">
-                        {!isGuest && (
+                        {isLoggedIn && (
                             <Tooltip title="Skapa inlägg">
                                 <IconButton
                                     component={Link}

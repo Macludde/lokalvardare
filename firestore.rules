@@ -2,11 +2,11 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /users/{uid} {
-      allow read: if request.auth != null;
+      allow read;
       allow write: if request.auth.uid == uid;
     }
     match /posts/{post} {
-      allow read: if request.auth != null;
+      allow read;
     	allow create: if request.auth != null && request.resource.data.author == request.auth.uid;
       allow delete, update: if request.auth.uid == resource.data.author;
       allow update: if request.auth != null && 
@@ -14,9 +14,23 @@ service cloud.firestore {
                 	.affectedKeys().hasOnly(['likes', 'amountOfComments'])
       
       match /comments/{comment} {
-      	allow read, delete: if request.auth != null;
+      	allow read;
       	allow create: if request.resource.data.author == request.auth.uid;
         allow update, delete: if resource.data.author == request.auth.uid;
+      }
+    }
+    match /games/{game} {
+    	allow write: if false;
+      allow read: if true;
+    	match /lobbies/{lobbyId} {
+        allow create, update, read: if true;
+        allow delete: if request.auth.uid == resource.data.admin;
+      }
+      match /games/{gameId} {
+      	allow read: if request.auth.uid in resource.data.players;
+      	allow update: if request.auth.uid in resource.data.players;
+        allow create: if true;
+        allow delete: if false;
       }
     }
   }
