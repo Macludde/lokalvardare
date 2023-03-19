@@ -1,8 +1,9 @@
-import { Box, Button, Paper, Typography } from '@mui/material'
+import { Box, Button, Paper, Typography, useTheme } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
 import { collection, getFirestore, query, where } from 'firebase/firestore'
 import React from 'react'
 import { useCollectionData } from 'react-firebase-hooks/firestore'
+import QRCode from 'react-qr-code'
 import { registerContestant } from '../../api/bonga'
 import AuthGate from '../../components/AuthGate'
 import useAuth from '../../hooks/useAuth'
@@ -11,6 +12,7 @@ const firestore = getFirestore()
 
 const Bonga: React.FC = () => {
     const { uid, isLoggedIn } = useAuth()
+    const theme = useTheme()
 
     // Query the collection "contestants" for a document where uid = uid
     const [users, loading] = useCollectionData(
@@ -35,7 +37,6 @@ const Bonga: React.FC = () => {
     }
     const user = users[0]
     const { bongCount } = user
-    console.log(user)
     const link = `${window.location.origin}/bonga/${user.id}`
     return (
         <AuthGate>
@@ -57,7 +58,20 @@ const Bonga: React.FC = () => {
                     }}
                 >
                     <Typography variant="h4">{bongCount} bongar</Typography>
-                    <a href={link}>{link}</a>
+                    <a href={link} style={{ display: 'block', padding: 16 }}>
+                        <QRCode
+                            value={link}
+                            bgColor="transparent"
+                            fgColor={theme.palette.text.primary}
+                            level="M"
+                            size={512}
+                            style={{
+                                maxWidth: '100%',
+                                width: '100%',
+                                height: 'auto',
+                            }}
+                        />
+                    </a>
                 </Paper>
                 <Button
                     variant="contained"
