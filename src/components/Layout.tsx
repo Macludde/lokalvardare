@@ -125,10 +125,10 @@ const Layout: React.FC = ({ children }) => {
                     </Grid>
                 )}
                 {/* Content */}
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={sidebarOpen ? 6 : 12}>
                     {children}
                 </Grid>
-                <Grid item xs={12} md />
+                {sidebarOpen && <Grid item xs={12} md />}
             </Grid>
         </Container>
     )

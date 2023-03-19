@@ -1,11 +1,8 @@
-import { Paper, Typography } from '@mui/material'
+import { Box, Button, Paper, Typography } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
 import { collection, getFirestore, query, where } from 'firebase/firestore'
 import React from 'react'
-import {
-    useCollectionData,
-    useDocumentData,
-} from 'react-firebase-hooks/firestore'
+import { useCollectionData } from 'react-firebase-hooks/firestore'
 import { registerContestant } from '../../api/bonga'
 import AuthGate from '../../components/AuthGate'
 import useAuth from '../../hooks/useAuth'
@@ -42,12 +39,35 @@ const Bonga: React.FC = () => {
     const link = `${window.location.origin}/bonga/${user.id}`
     return (
         <AuthGate>
-            <Paper
-                sx={{ p: 4, gap: 8, display: 'flex', flexDirection: 'column' }}
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                }}
             >
-                <Typography variant="h4">{bongCount} bongar</Typography>
-                <a href={link}>{link}</a>
-            </Paper>
+                <Paper
+                    sx={{
+                        p: 4,
+                        gap: 8,
+                        display: 'inline-flex',
+                        flexDirection: 'column',
+                        alignSelf: 'center',
+                        maxWidth: '100%',
+                    }}
+                >
+                    <Typography variant="h4">{bongCount} bongar</Typography>
+                    <a href={link}>{link}</a>
+                </Paper>
+                <Button
+                    variant="contained"
+                    sx={{ px: 8, mt: 4 }}
+                    LinkComponent="a"
+                    href="/bonga/leaderboard"
+                >
+                    Leaderboard
+                </Button>
+            </Box>
         </AuthGate>
     )
 }

@@ -1,5 +1,5 @@
-import { Tooltip } from '@material-ui/core'
-import { Box, Button, Paper, Typography } from '@mui/material'
+import { Tooltip, Box, Button, Paper, Typography } from '@mui/material'
+
 import React from 'react'
 import { pickSide } from '../../../api/games/OrderAndChaos/game'
 import { InitialGameState } from '../../../api/games/OrderAndChaos/types'

@@ -1,6 +1,6 @@
-import { Select } from '@material-ui/core'
+import { Select, Box, MenuItem, Paper, TextField } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
-import { Box, MenuItem, Paper, TextField } from '@mui/material'
+
 import {
     addDoc,
     collection,
