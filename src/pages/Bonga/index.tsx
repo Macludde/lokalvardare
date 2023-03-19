@@ -11,7 +11,7 @@ import useAuth from '../../hooks/useAuth'
 const firestore = getFirestore()
 
 const Bonga: React.FC = () => {
-    const { uid, isLoggedIn } = useAuth()
+    const { uid } = useAuth()
     const theme = useTheme()
 
     // Query the collection "contestants" for a document where uid = uid

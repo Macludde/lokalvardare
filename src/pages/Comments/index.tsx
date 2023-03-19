@@ -15,7 +15,6 @@ import {
 } from 'react-firebase-hooks/firestore'
 import { useParams } from 'react-router-dom'
 import { Comment as CommentType } from '../../api/firebase/schemes'
-import Layout from '../../components/Layout'
 import useAuth from '../../hooks/useAuth'
 import { PostWithID } from '../../hooks/usePosts'
 import Post from '../Feed/Post'

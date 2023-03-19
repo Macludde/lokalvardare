@@ -3,12 +3,11 @@ import {
     collection,
     collectionGroup,
     doc,
-    getDocs,
     getFirestore,
     orderBy,
     query,
 } from 'firebase/firestore'
-import React, { useEffect } from 'react'
+import React from 'react'
 import {
     useCollectionData,
     useDocumentDataOnce,
