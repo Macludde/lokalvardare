@@ -2,16 +2,27 @@ import { Box, CircularProgress, Grid, Paper, Typography } from '@mui/material'
 import {
     collection,
     collectionGroup,
+    doc,
     getDocs,
     getFirestore,
     orderBy,
     query,
 } from 'firebase/firestore'
 import React, { useEffect } from 'react'
-import { useCollectionData } from 'react-firebase-hooks/firestore'
+import {
+    useCollectionData,
+    useDocumentDataOnce,
+} from 'react-firebase-hooks/firestore'
 
 const firestore = getFirestore()
+
+const DEFAULT_BONG_VALUE = 11.843
+const DEFAULT_BASE_VALUE = 3000
+
 const Leaderboard: React.FC = () => {
+    const [gameSettings, gameSettingsLoading] = useDocumentDataOnce(
+        doc(firestore, 'settings', 'bongCompetition')
+    )
     const [users, usersLoading] = useCollectionData(
         collection(firestore, 'users'),
         {
@@ -33,16 +44,6 @@ const Leaderboard: React.FC = () => {
             idField: 'id',
         }
     )
-    useEffect(() => {
-        getDocs(
-            query(
-                collectionGroup(firestore, 'bongs'),
-                orderBy('timestamp', 'desc')
-            )
-        ).then((snapshot) => {
-            console.log(snapshot)
-        })
-    })
     const bongsByUser = React.useMemo(
         () =>
             bongs?.reduce((acc, bong) => {
@@ -61,21 +62,46 @@ const Leaderboard: React.FC = () => {
     })
     const latestBongs = bongs?.slice(0, 10) ?? []
 
-    if (usersLoading || bongsLoading) {
+    if (
+        usersLoading ||
+        bongsLoading ||
+        gameSettingsLoading ||
+        contestantsLoading
+    ) {
         return <CircularProgress />
     }
 
     const largestBongCount = sortedUsers[0]?.[1]
+    const totalBongCount = bongs?.length ?? 0
+    const donation = Math.floor(
+        (gameSettings?.baseValue ?? DEFAULT_BASE_VALUE) +
+            (gameSettings?.bongValue ?? DEFAULT_BONG_VALUE) * totalBongCount
+    )
+    const formattedDonation = donation.toLocaleString('sv-SE', {
+        style: 'currency',
+        currency: 'SEK',
+        maximumFractionDigits: 0,
+    })
 
     return (
-        <Grid container xs={12} gap={2}>
+        <Grid container gap={2}>
+            <Grid item xs={12}>
+                <Paper sx={{ p: 4 }}>
+                    <Typography variant="h6" fontWeight="bold">
+                        Total donation
+                    </Typography>
+                    <Typography fontSize={64} fontWeight="bold">
+                        {formattedDonation}
+                    </Typography>
+                </Paper>
+            </Grid>
             <Grid item xs={12} md={9}>
                 <Paper
                     sx={{
                         p: 2,
                     }}
                 >
-                    <Typography variant="h5" fontWeight="bold" sx={{ mb: 2 }}>
+                    <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>
                         Leaderboard
                     </Typography>
                     <Box
@@ -95,20 +121,6 @@ const Leaderboard: React.FC = () => {
                                     <Box
                                         sx={{
                                             width: '100%',
-                                            // width: `${
-                                            //     Math.floor(
-                                            //         (bongCount /
-                                            //             largestBongCount) *
-                                            //             50
-                                            //     ) + 50
-                                            // }%`,
-                                            /* 
-                            minWidth: '150px',
-                            */
-                                            // opacity:
-                                            //     (bongCount / largestBongCount) *
-                                            //         0.5 +
-                                            //     0.5,
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'space-between',
@@ -165,7 +177,7 @@ const Leaderboard: React.FC = () => {
                         p: 2,
                     }}
                 >
-                    <Typography variant="h5" fontWeight="bold" sx={{ mb: 2 }}>
+                    <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>
                         Senaste bongar
                     </Typography>
                     <Box
@@ -175,7 +187,6 @@ const Leaderboard: React.FC = () => {
                         }}
                     >
                         {latestBongs.map((bong, index) => {
-                            // HH:MM:SS format
                             const timestamp = bong.timestamp.toDate()
                             const formattedTimestamp =
                                 timestamp.toLocaleTimeString('sv-SE', {
@@ -199,7 +210,7 @@ const Leaderboard: React.FC = () => {
                                         transition: 'all 0.5s',
                                         position: 'absolute',
                                         top: index * 32,
-                                        '&:nth-child(odd)': {
+                                        '&:nth-of-type(odd)': {
                                             backgroundColor:
                                                 'rgba(255,255,255,0.1)',
                                         },
