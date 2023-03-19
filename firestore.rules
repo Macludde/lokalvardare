@@ -2,11 +2,11 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /users/{uid} {
-      allow read;
-      allow write: if request.auth.uid == uid;
+      allow read: if true;
+      allow write: if request.auth.uid == uid && (!('isAdmin' in request.resource.data) || request.resource.data.isAdmin == resource.data.isAdmin);
     }
     match /posts/{post} {
-      allow read;
+      allow read: if true;
     	allow create: if request.auth != null && request.resource.data.author == request.auth.uid;
       allow delete, update: if request.auth.uid == resource.data.author;
       allow update: if request.auth != null && 
@@ -14,7 +14,7 @@ service cloud.firestore {
                 	.affectedKeys().hasOnly(['likes', 'amountOfComments'])
       
       match /comments/{comment} {
-      	allow read;
+      	allow read: if true;
       	allow create: if request.resource.data.author == request.auth.uid;
         allow update, delete: if resource.data.author == request.auth.uid;
       }
@@ -32,6 +32,27 @@ service cloud.firestore {
         allow create: if true;
         allow delete: if false;
       }
+    }
+    match /contestants/{contestant} {
+      allow read: if true;
+    	allow create: if request.auth != null && request.resource.data.uid == request.auth.uid;
+      // admin
+      allow delete, update: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+      
+      match /bongs/{bongId} {
+      	allow read: if true;
+        // admin
+      	allow create: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+      	allow update, delete: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+      }
+    }
+    
+    match /settings/{setting} {
+    	allow read;
+    }
+    
+    match /{path=**}/bongs/{bongId} {
+      	allow read: if true;
     }
   }
 }
