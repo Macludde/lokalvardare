@@ -131,7 +131,7 @@ const Leaderboard: React.FC = () => {
                                             position: 'absolute',
                                             zIndex: 1000 - index,
                                             top: index * 52,
-                                            color: 'white',
+                                            color: 'text.primary',
                                         }}
                                     >
                                         <Box
@@ -211,8 +211,7 @@ const Leaderboard: React.FC = () => {
                                         position: 'absolute',
                                         top: index * 32,
                                         '&:nth-of-type(odd)': {
-                                            backgroundColor:
-                                                'rgba(255,255,255,0.1)',
+                                            backgroundColor: 'action.disabled',
                                         },
                                     }}
                                 >

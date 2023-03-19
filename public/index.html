@@ -2,29 +2,13 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+        <link rel="icon" type="image/svg+xml" href="%PUBLIC_URL%/favicon.svg" />
+        <link rel="icon" type="image/png" href="%PUBLIC_URL%/favicon.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#000000" />
         <meta
             name="description"
             content="Web site created using create-react-app"
-        />
-        <link
-            rel="apple-touch-icon"
-            sizes="180x180"
-            href="/apple-touch-icon.png"
-        />
-        <link
-            rel="icon"
-            type="image/png"
-            sizes="32x32"
-            href="/favicon-32x32.png"
-        />
-        <link
-            rel="icon"
-            type="image/png"
-            sizes="16x16"
-            href="/favicon-16x16.png"
         />
         <!--
       manifest.json provides metadata used when your web app is installed on a
@@ -42,9 +26,9 @@
     -->
         <title>Lokalvårdarna</title>
     </head>
-    <body>
+    <body style="background-color:#121212" onload="document.querySelector('body').style=''">
         <noscript>You need to enable JavaScript to run this app.</noscript>
-        <div id="root"></div>
+        <div id="root" ></div>
         <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
@@ -54,5 +38,6 @@
 
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
+      
     --></body>
 </html>

@@ -15,7 +15,7 @@ import {
 import React from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { ThemeContext } from '../App'
-import logo from '../assets/logo-circle.png'
+import logo from '../assets/logo.svg'
 import useAuth from '../hooks/useAuth'
 import { routes } from '../Router'
 
