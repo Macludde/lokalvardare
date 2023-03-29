@@ -14,8 +14,8 @@ import {
 
 const firestore = getFirestore()
 
-const DEFAULT_BONG_VALUE = 11.843
-const DEFAULT_BASE_VALUE = 3000
+const DEFAULT_BONG_VALUE = 0
+const DEFAULT_BASE_VALUE = 0
 
 const Leaderboard: React.FC = () => {
     const [gameSettings, gameSettingsLoading] = useDocumentDataOnce(
@@ -29,6 +29,9 @@ const Leaderboard: React.FC = () => {
     }
 
     const totalBongCount = bongs?.length ?? 0
+    if (!gameSettings) {
+        console.log('No game settings found, using defaults')
+    }
     const donation = Math.floor(
         (gameSettings?.baseValue ?? DEFAULT_BASE_VALUE) +
             (gameSettings?.bongValue ?? DEFAULT_BONG_VALUE) * totalBongCount

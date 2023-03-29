@@ -47,3 +47,10 @@ export const registerBong = async (id: string, uid: string) => {
     })
     await Promise.all([promise1, promise2])
 }
+
+export const pauseContestant = async (id: string, uid: string) => {
+    const contestantDoc = doc(firestore, 'contestants', id)
+    await updateDoc(contestantDoc, {
+        pausedAt: serverTimestamp(),
+    })
+}
