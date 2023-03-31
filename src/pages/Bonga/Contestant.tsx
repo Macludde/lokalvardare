@@ -1,4 +1,10 @@
-import { Box, CircularProgress, Paper, Typography } from '@mui/material'
+import {
+    Box,
+    CircularProgress,
+    Paper,
+    Typography,
+    useTheme,
+} from '@mui/material'
 import {
     collection,
     doc,
@@ -13,10 +19,12 @@ import {
     useDocumentDataOnce,
 } from 'react-firebase-hooks/firestore'
 import { useParams } from 'react-router-dom'
+import { Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis } from 'recharts'
 import useAuth from '../../hooks/useAuth'
 
 const firestore = getFirestore()
 const Contestant: React.FC = () => {
+    const theme = useTheme()
     const { id } = useParams()
     const { uid } = useAuth()
     const [user, userLoading] = useDocumentDataOnce(
@@ -64,6 +72,50 @@ const Contestant: React.FC = () => {
         : undefined
     const isPaused = pausedUntil && pausedUntil.getTime() > Date.now()
     const latestBong: Date | undefined = bongs?.[0]?.timestamp?.toDate()
+    const bongData =
+        [...(bongs ?? [])]
+            .sort((a, b) => {
+                return (
+                    a.timestamp.toDate().getTime() -
+                    b.timestamp.toDate().getTime()
+                )
+            })
+            .reduce(
+                (acc, bong) => {
+                    const time = bong.timestamp.toDate().getTime()
+                    if (acc.length === 0) {
+                        return [{ time, bongs: 1 }]
+                    }
+                    return [
+                        ...acc,
+                        {
+                            time,
+                            bongs: acc[acc.length - 1].bongs,
+                            timestamp: new Date(time).toLocaleTimeString(),
+                        },
+                        {
+                            time,
+                            bongs: acc[acc.length - 1].bongs + 1,
+                            timestamp: new Date(time).toLocaleTimeString(),
+                        },
+                    ]
+                },
+                [
+                    {
+                        time: new Date('2023-03-29T17:00:00').getTime(),
+                        bongs: 0,
+                    },
+                ] as {
+                    time: number
+                    bongs: number
+                }[]
+            ) ?? []
+    if (bongData.length > 0) {
+        bongData.push({
+            time: bongData[bongData.length - 1].time + 600000,
+            bongs: bongData[bongData.length - 1].bongs,
+        })
+    }
     return (
         <Box
             sx={{
@@ -106,6 +158,45 @@ const Contestant: React.FC = () => {
                         Pausad senast kl {pausedAt.toLocaleTimeString()}
                     </Typography>
                 )}
+                <AreaChart
+                    width={700}
+                    height={200}
+                    data={bongData}
+                    margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                >
+                    <XAxis
+                        dataKey="time"
+                        type="number"
+                        domain={['dataMin', 'dataMax']}
+                        tickCount={10}
+                        tickFormatter={(time) => {
+                            const date = new Date(time)
+                            return date.toLocaleTimeString('sv-SE', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                            })
+                        }}
+                    />
+                    <YAxis />
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <Tooltip
+                        labelFormatter={(time) => {
+                            const date = new Date(time)
+                            return date.toLocaleTimeString('sv-SE')
+                        }}
+                        labelStyle={{
+                            fontWeight: 'bold',
+                            color: theme.palette.primary.main,
+                        }}
+                    />
+                    <Area
+                        type="monotone"
+                        dataKey="bongs"
+                        fillOpacity={1}
+                        stroke={theme.palette.primary.main}
+                        fill={theme.palette.primary.main}
+                    />
+                </AreaChart>
                 {/*
                 {user?.isAdmin === true && (
                     <Stack direction="column" gap={10}>
@@ -149,8 +240,7 @@ const Contestant: React.FC = () => {
                                 }
                                 setIsLoading(true)
                                 await pauseContestant(
-                                    id as string,
-                                    contestant.uid
+                                    id as string
                                 )
                                 setIsLoading(false)
                             }}
