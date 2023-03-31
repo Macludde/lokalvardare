@@ -1,11 +1,4 @@
-import {
-    Box,
-    Button,
-    CircularProgress,
-    Paper,
-    Stack,
-    Typography,
-} from '@mui/material'
+import { Box, CircularProgress, Paper, Typography } from '@mui/material'
 import {
     collection,
     doc,
@@ -14,13 +7,12 @@ import {
     query,
 } from 'firebase/firestore'
 import React, { useEffect } from 'react'
-import { useParams } from 'react-router-dom'
 import {
     useCollectionData,
     useDocumentData,
     useDocumentDataOnce,
 } from 'react-firebase-hooks/firestore'
-import { pauseContestant, registerBong } from '../../api/bonga'
+import { useParams } from 'react-router-dom'
 import useAuth from '../../hooks/useAuth'
 
 const firestore = getFirestore()
@@ -49,7 +41,7 @@ const Contestant: React.FC = () => {
         }
     )
     const [minutesSinceLastBong, setMinutesSinceLastBong] = React.useState(0)
-    const [isLoading, setIsLoading] = React.useState(false)
+    // const [isLoading, setIsLoading] = React.useState(false)
     useEffect(() => {
         const interval = setInterval(() => {
             const latestBong: Date | undefined = bongs?.[0]?.timestamp?.toDate()
@@ -114,6 +106,7 @@ const Contestant: React.FC = () => {
                         Pausad senast kl {pausedAt.toLocaleTimeString()}
                     </Typography>
                 )}
+                {/*
                 {user?.isAdmin === true && (
                     <Stack direction="column" gap={10}>
                         <Button
@@ -165,7 +158,8 @@ const Contestant: React.FC = () => {
                             Bongpausa
                         </Button>
                     </Stack>
-                )}
+                )
+                        */}
             </Paper>
         </Box>
     )
