@@ -6,21 +6,16 @@ import {
     Paper,
     Typography,
 } from '@mui/material'
-import {
-    collection,
-    collectionGroup,
-    doc,
-    getFirestore,
-} from 'firebase/firestore'
+import { collection, getFirestore, query, where } from 'firebase/firestore'
 
 import React from 'react'
 import {
     useCollectionData,
-    useDocumentDataOnce,
+    useCollectionDataOnce,
 } from 'react-firebase-hooks/firestore'
+import { Link } from 'react-router-dom'
 import LeaderboardRow from '../../components/bonga/LeaderboardRow'
 import useYearFromSearchParams from '../../hooks/useYearFromSearchParams'
-import { clearOldField } from '../../api/bonga'
 
 const firestore = getFirestore()
 
@@ -30,8 +25,11 @@ const DEFAULT_BASE_VALUE = 0
 const Leaderboard: React.FC = () => {
     const { yearToUse } = useYearFromSearchParams()
 
-    const [gameSettings, gameSettingsLoading] = useDocumentDataOnce(
-        doc(firestore, 'settings', `bongCompetition_${yearToUse}`)
+    const [allSettings, settingsLoading] = useCollectionDataOnce(
+        collection(firestore, 'settings'),
+        {
+            idField: 'uid',
+        }
     )
     const [users, usersLoading] = useCollectionData(
         collection(firestore, 'users'),
@@ -40,25 +38,14 @@ const Leaderboard: React.FC = () => {
         }
     )
     const [contestants, contestantsLoading] = useCollectionData(
-        collection(firestore, 'contestants'),
+        query(
+            collection(firestore, 'contestants'),
+            where(`bongCount_${yearToUse}`, '!=', null)
+        ),
         {
             idField: 'id',
         }
     )
-    const [bongs, bongsLoading] = useCollectionData(
-        collectionGroup(firestore, 'bongs'),
-        {
-            idField: 'id',
-        }
-    )
-    if (
-        contestantsLoading ||
-        usersLoading ||
-        gameSettingsLoading ||
-        bongsLoading
-    ) {
-        return <CircularProgress />
-    }
     const bongsByUser: Record<string, number> =
         contestants?.reduce((acc, contestant) => {
             return {
@@ -76,14 +63,23 @@ const Leaderboard: React.FC = () => {
     const largestBongCount = sortedUsers[0]?.[1]
     const totalBongCount =
         contestants?.reduce((acc, contestant) => {
-            return acc + contestant[`bongCount_${yearToUse}`]
+            return acc + (contestant[`bongCount_${yearToUse}`] ?? 0)
         }, 0) ?? 0
-    if (!gameSettings) {
+
+    const bongCompetitions =
+        allSettings?.filter((setting) =>
+            setting.uid.includes('bongCompetition')
+        ) ?? []
+    const currentCompetition = bongCompetitions.find((comp) =>
+        comp.uid.includes(yearToUse.toString())
+    )
+    if (!currentCompetition) {
         console.log('No game settings found, using defaults')
     }
     const donation = Math.floor(
-        (gameSettings?.baseValue ?? DEFAULT_BASE_VALUE) +
-            (gameSettings?.bongValue ?? DEFAULT_BONG_VALUE) * totalBongCount
+        (currentCompetition?.baseValue ?? DEFAULT_BASE_VALUE) +
+            (currentCompetition?.bongValue ?? DEFAULT_BONG_VALUE) *
+                totalBongCount
     )
     const formattedDonation = donation.toLocaleString('sv-SE', {
         style: 'currency',
@@ -93,13 +89,49 @@ const Leaderboard: React.FC = () => {
 
     return (
         <Grid container gap={2}>
+            <Grid item xs={12}>
+                <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
+                    {settingsLoading ? (
+                        <CircularProgress />
+                    ) : (
+                        <>
+                            <Link to="/bonga/leaderboard?year=2025">
+                                <Button
+                                    variant={
+                                        yearToUse === 2025
+                                            ? 'contained'
+                                            : 'outlined'
+                                    }
+                                >
+                                    2025
+                                </Button>
+                            </Link>
+                            <Link to="/bonga/leaderboard?year=2023">
+                                <Button
+                                    variant={
+                                        yearToUse === 2023
+                                            ? 'contained'
+                                            : 'outlined'
+                                    }
+                                >
+                                    2023
+                                </Button>
+                            </Link>
+                        </>
+                    )}
+                </Box>
+            </Grid>
             <Grid item xs>
                 <Paper sx={{ p: 4 }}>
                     <Typography variant="h6" fontWeight="bold">
                         Antal bongar
                     </Typography>
                     <Typography fontSize={64} fontWeight="bold">
-                        {totalBongCount}
+                        {settingsLoading || contestantsLoading ? (
+                            <CircularProgress />
+                        ) : (
+                            totalBongCount
+                        )}
                     </Typography>
                 </Paper>
             </Grid>
@@ -109,7 +141,11 @@ const Leaderboard: React.FC = () => {
                         Prel Donation
                     </Typography>
                     <Typography fontSize={64} fontWeight="bold">
-                        {formattedDonation}
+                        {settingsLoading || contestantsLoading ? (
+                            <CircularProgress />
+                        ) : (
+                            formattedDonation
+                        )}
                     </Typography>
                 </Paper>
             </Grid>
@@ -124,26 +160,35 @@ const Leaderboard: React.FC = () => {
                     </Typography>
                     <Box
                         sx={{
-                            height: sortedUsers.length * 52,
+                            height:
+                                contestantsLoading || usersLoading
+                                    ? undefined
+                                    : sortedUsers.length * 52,
                             position: 'relative',
                         }}
                     >
-                        {sortedUsers.map((user, index) => {
-                            const [uid, bongCount] = user
-                            const contestantId = contestants?.find(
-                                (c) => c.uid === uid
-                            )?.id
-                            const userObject = users?.find((u) => u.uid === uid)
-                            return (
-                                <LeaderboardRow
-                                    linkUrl={`/bonga/${contestantId}?year=${yearToUse}`}
-                                    index={index}
-                                    bongCount={bongCount}
-                                    largestBongCount={largestBongCount}
-                                    userObject={userObject}
-                                />
-                            )
-                        })}
+                        {contestantsLoading || usersLoading ? (
+                            <CircularProgress />
+                        ) : (
+                            sortedUsers.map((user, index) => {
+                                const [uid, bongCount] = user
+                                const contestantId = contestants?.find(
+                                    (c) => c.uid === uid
+                                )?.id
+                                const userObject = users?.find(
+                                    (u) => u.uid === uid
+                                )
+                                return (
+                                    <LeaderboardRow
+                                        linkUrl={`/bonga/${contestantId}?year=${yearToUse}`}
+                                        index={index}
+                                        bongCount={bongCount}
+                                        largestBongCount={largestBongCount}
+                                        userObject={userObject}
+                                    />
+                                )
+                            })
+                        )}
                     </Box>
                 </Paper>
             </Grid>
