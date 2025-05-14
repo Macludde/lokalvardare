@@ -70,6 +70,13 @@ const Leaderboard: React.FC = () => {
         allSettings?.filter((setting) =>
             setting.uid.includes('bongCompetition')
         ) ?? []
+    const years = bongCompetitions
+        .map((comp) => {
+            const year = parseInt(comp.uid.split('_')[1], 10)
+            return Number(year)
+        })
+        .filter((year) => !Number.isNaN(year))
+    years.sort((a, b) => b - a)
     const currentCompetition = bongCompetitions.find((comp) =>
         comp.uid.includes(yearToUse.toString())
     )
@@ -94,30 +101,21 @@ const Leaderboard: React.FC = () => {
                     {settingsLoading ? (
                         <CircularProgress />
                     ) : (
-                        <>
-                            <Link to="/bonga/leaderboard?year=2025">
-                                <Button
-                                    variant={
-                                        yearToUse === 2025
-                                            ? 'contained'
-                                            : 'outlined'
-                                    }
-                                >
-                                    2025
-                                </Button>
-                            </Link>
-                            <Link to="/bonga/leaderboard?year=2023">
-                                <Button
-                                    variant={
-                                        yearToUse === 2023
-                                            ? 'contained'
-                                            : 'outlined'
-                                    }
-                                >
-                                    2023
-                                </Button>
-                            </Link>
-                        </>
+                        years.map((year) => {
+                            return (
+                                <Link to={`/bonga/leaderboard?year=${year}`}>
+                                    <Button
+                                        variant={
+                                            yearToUse === Number(year)
+                                                ? 'contained'
+                                                : 'outlined'
+                                        }
+                                    >
+                                        {year}
+                                    </Button>
+                                </Link>
+                            )
+                        })
                     )}
                 </Box>
             </Grid>
