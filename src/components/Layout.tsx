@@ -18,6 +18,7 @@ import { ThemeContext } from '../App'
 import logo from '../assets/logo.svg'
 import useAuth from '../hooks/useAuth'
 import { routes } from '../Router'
+import useBongCompetitions from '../hooks/useBongCompetitions'
 
 const sidebarRoutes = routes.filter((route) => route.inSidebar)
 

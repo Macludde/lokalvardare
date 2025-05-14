@@ -9,12 +9,10 @@ import {
 import { collection, getFirestore, query, where } from 'firebase/firestore'
 
 import React from 'react'
-import {
-    useCollectionData,
-    useCollectionDataOnce,
-} from 'react-firebase-hooks/firestore'
+import { useCollectionData } from 'react-firebase-hooks/firestore'
 import { Link } from 'react-router-dom'
 import LeaderboardRow from '../../components/bonga/LeaderboardRow'
+import useBongCompetitions from '../../hooks/useBongCompetitions'
 import useYearFromSearchParams from '../../hooks/useYearFromSearchParams'
 
 const firestore = getFirestore()
@@ -24,13 +22,12 @@ const DEFAULT_BASE_VALUE = 0
 
 const Leaderboard: React.FC = () => {
     const { yearToUse } = useYearFromSearchParams()
+    const {
+        years,
+        bongCompetitions,
+        isLoading: settingsLoading,
+    } = useBongCompetitions()
 
-    const [allSettings, settingsLoading] = useCollectionDataOnce(
-        collection(firestore, 'settings'),
-        {
-            idField: 'uid',
-        }
-    )
     const [users, usersLoading] = useCollectionData(
         collection(firestore, 'users'),
         {
@@ -66,17 +63,6 @@ const Leaderboard: React.FC = () => {
             return acc + (contestant[`bongCount_${yearToUse}`] ?? 0)
         }, 0) ?? 0
 
-    const bongCompetitions =
-        allSettings?.filter((setting) =>
-            setting.uid.includes('bongCompetition')
-        ) ?? []
-    const years = bongCompetitions
-        .map((comp) => {
-            const year = parseInt(comp.uid.split('_')[1], 10)
-            return Number(year)
-        })
-        .filter((year) => !Number.isNaN(year))
-    years.sort((a, b) => b - a)
     const currentCompetition = bongCompetitions.find((comp) =>
         comp.uid.includes(yearToUse.toString())
     )
