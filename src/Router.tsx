@@ -37,9 +37,15 @@ const baseRoutes: Route[] = [
         inSidebar: true,
     },
     {
-        label: 'Bonga',
+        label: 'Vårda för Barnen 2025',
         path: 'bonga',
         component: <Bonga />,
+        inSidebar: true,
+    },
+    {
+        label: 'Vårda för Barnen 2023',
+        path: 'bonga/leaderboard?year=2023',
+        component: <Leaderboard />,
         inSidebar: true,
     },
     {

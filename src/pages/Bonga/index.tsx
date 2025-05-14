@@ -5,17 +5,19 @@ import React from 'react'
 import { useCollectionData } from 'react-firebase-hooks/firestore'
 import QRCode from 'react-qr-code'
 import { registerContestant } from '../../api/bonga'
+import logo from '../../assets/logo.svg'
 import AuthGate from '../../components/AuthGate'
 import useAuth from '../../hooks/useAuth'
-import logo from '../../assets/logo.svg'
+import useYearFromSearchParams from '../../hooks/useYearFromSearchParams'
 
 const firestore = getFirestore()
 
-const Bonga: React.FC = () => {
+const Bonga: React.FC<{ year?: number }> = ({ year }) => {
     const { uid } = useAuth()
     const theme = useTheme()
+    const { yearToUse } = useYearFromSearchParams()
 
-    // Query the collection "contestants" for a document where uid = uid
+    // Find "me" among the contestants
     const [contestants, loading] = useCollectionData(
         query(collection(firestore, 'contestants'), where('uid', '==', uid)),
         {
@@ -44,8 +46,8 @@ const Bonga: React.FC = () => {
         ? new Date(pausedAt.getTime() + 900_000) // 15 min
         : undefined
     const isPaused = pausedUntil && pausedUntil.getTime() > Date.now()
-    const { bongCount } = contestant
-    const link = `${window.location.origin}/bonga/${contestant.id}`
+    const bongCount = contestant[`bongCount_${yearToUse}`] || 0
+    const link = `${window.location.origin}/bonga/${contestant.id}?year=${yearToUse}`
     return (
         <AuthGate>
             <Box
@@ -123,7 +125,7 @@ const Bonga: React.FC = () => {
                     variant="contained"
                     sx={{ px: 8, mt: 4 }}
                     LinkComponent="a"
-                    href="/bonga/leaderboard"
+                    href={`/bonga/leaderboard?year=${yearToUse}`}
                 >
                     Leaderboard
                 </Button>

@@ -1,10 +1,26 @@
-import { Box, CircularProgress, Grid, Paper, Typography } from '@mui/material'
-import { collection, doc, getFirestore } from 'firebase/firestore'
+import {
+    Box,
+    Button,
+    CircularProgress,
+    Grid,
+    Paper,
+    Typography,
+} from '@mui/material'
+import {
+    collection,
+    collectionGroup,
+    doc,
+    getFirestore,
+} from 'firebase/firestore'
+
 import React from 'react'
 import {
     useCollectionData,
     useDocumentDataOnce,
 } from 'react-firebase-hooks/firestore'
+import LeaderboardRow from '../../components/bonga/LeaderboardRow'
+import useYearFromSearchParams from '../../hooks/useYearFromSearchParams'
+import { clearOldField } from '../../api/bonga'
 
 const firestore = getFirestore()
 
@@ -12,8 +28,10 @@ const DEFAULT_BONG_VALUE = 0
 const DEFAULT_BASE_VALUE = 0
 
 const Leaderboard: React.FC = () => {
+    const { yearToUse } = useYearFromSearchParams()
+
     const [gameSettings, gameSettingsLoading] = useDocumentDataOnce(
-        doc(firestore, 'settings', 'bongCompetition')
+        doc(firestore, 'settings', `bongCompetition_${yearToUse}`)
     )
     const [users, usersLoading] = useCollectionData(
         collection(firestore, 'users'),
@@ -27,14 +45,27 @@ const Leaderboard: React.FC = () => {
             idField: 'id',
         }
     )
-    if (contestantsLoading || usersLoading || gameSettingsLoading) {
+    const [bongs, bongsLoading] = useCollectionData(
+        collectionGroup(firestore, 'bongs'),
+        {
+            idField: 'id',
+        }
+    )
+    if (
+        contestantsLoading ||
+        usersLoading ||
+        gameSettingsLoading ||
+        bongsLoading
+    ) {
         return <CircularProgress />
     }
     const bongsByUser: Record<string, number> =
         contestants?.reduce((acc, contestant) => {
             return {
                 ...acc,
-                [contestant.uid]: contestant.bongCount as number,
+                [contestant.uid]: contestant[
+                    `bongCount_${yearToUse}`
+                ] as number,
             }
         }, {}) ?? {}
     // Convert bongsByUser to an array of objects and sort on bongCount
@@ -45,7 +76,7 @@ const Leaderboard: React.FC = () => {
     const largestBongCount = sortedUsers[0]?.[1]
     const totalBongCount =
         contestants?.reduce((acc, contestant) => {
-            return acc + contestant.bongCount
+            return acc + contestant[`bongCount_${yearToUse}`]
         }, 0) ?? 0
     if (!gameSettings) {
         console.log('No game settings found, using defaults')
@@ -104,62 +135,23 @@ const Leaderboard: React.FC = () => {
                             )?.id
                             const userObject = users?.find((u) => u.uid === uid)
                             return (
-                                <a href={`/bonga/${contestantId}`} key={uid}>
-                                    <Box
-                                        sx={{
-                                            width: '100%',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'space-between',
-                                            transition: 'all 0.5s',
-                                            fontSize: 24,
-                                            fontWeight: '700',
-                                            height: 52,
-                                            position: 'absolute',
-                                            zIndex: 1000 - index,
-                                            top: index * 52,
-                                            color: 'text.primary',
-                                        }}
-                                    >
-                                        <Box
-                                            sx={{
-                                                width: `${
-                                                    Math.floor(
-                                                        (bongCount /
-                                                            largestBongCount) *
-                                                            50
-                                                    ) + 50
-                                                }%`,
-                                                height: 48,
-                                                backgroundColor:
-                                                    'rgba(0,255,0,0.1)',
-                                                position: 'absolute',
-                                                transition: 'all 0.5s',
-                                                borderRadius: 1,
-                                                zIndex: -1000,
-                                            }}
-                                        />
-                                        <Box
-                                            sx={{
-                                                whiteSpace: 'nowrap',
-                                                overflow: 'hidden',
-                                                textOverflow: 'ellipsis',
-                                                flex: 1,
-                                                pl: 1,
-                                            }}
-                                        >
-                                            {index}. {userObject?.name}
-                                        </Box>
-                                        <Box sx={{ pr: 1 }}>{bongCount}</Box>
-                                    </Box>
-                                </a>
+                                <LeaderboardRow
+                                    linkUrl={`/bonga/${contestantId}?year=${yearToUse}`}
+                                    index={index}
+                                    bongCount={bongCount}
+                                    largestBongCount={largestBongCount}
+                                    userObject={userObject}
+                                />
                             )
                         })}
                     </Box>
                 </Paper>
             </Grid>
+            {/* Latest bongs */}
+            {/* <Grid item xs sx={{ position: 'relative' }}>
+                <LatestBongs users={users ?? []} latestBongs={latestBongs} />
+            </Grid> */}
         </Grid>
     )
 }
-
 export default Leaderboard

@@ -13,6 +13,7 @@ import {
     doc,
     getFirestore,
     increment,
+    runTransaction,
     serverTimestamp,
     updateDoc,
 } from 'firebase/firestore'
@@ -28,9 +29,10 @@ const firestore = getFirestore()
 
 const contestantCollection = collection(firestore, 'contestants')
 export const registerContestant = (uid: string) => {
+    const year = new Date().getFullYear()
     const bongUser = {
         uid,
-        bongCount: 0,
+        [`bongCount_${year}`]: 0,
     }
     addDoc(contestantCollection, bongUser)
 }
@@ -40,12 +42,25 @@ export const registerBong = async (id: string, uid: string) => {
         timestamp: serverTimestamp(),
         uid,
     }
+    const year = new Date().getFullYear()
+    const contestantRef = doc(firestore, 'contestants', id)
     const bongCollection = collection(firestore, 'contestants', id, 'bongs')
-    const promise1 = addDoc(bongCollection, bong)
-    const promise2 = updateDoc(doc(firestore, 'contestants', id), {
-        bongCount: increment(1),
+
+    await runTransaction(firestore, async (transaction) => {
+        const newBongRef = doc(bongCollection)
+
+        transaction.set(newBongRef, bong)
+        transaction.update(contestantRef, {
+            [`bongCount_${year}`]: increment(1),
+        })
     })
-    await Promise.all([promise1, promise2])
+}
+
+export const clearOldField = async (id: string) => {
+    const contestantDoc = doc(firestore, 'contestants', id)
+    await updateDoc(contestantDoc, {
+        bongCount: null,
+    })
 }
 
 export const pauseContestant = async (id: string) => {
